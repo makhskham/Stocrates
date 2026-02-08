@@ -32,7 +32,12 @@ module.exports = {
           red: '#fe502d',
           gray: '#efefef',
           blue: '#a7dcfa',
-          'dark-blue': '#416072'
+          'dark-blue': '#416072',
+          // Game mode colors
+          purple: '#b794f6',
+          pink: '#f472b6',
+          'game-gradient-start': '#667eea',
+          'game-gradient-end': '#f472b6'
         },
         // Tailwind semantic colors (mapped to Stocrates palette)
         border: 'hsl(var(--border))',

@@ -92,12 +92,18 @@ export function InvestmentPanel() {
 
   return (
     <div className="space-y-4">
-      <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-        <div className="flex items-start gap-2">
-          <TrendingUp className="h-5 w-5 text-blue-600 dark:text-blue-400 mt-0.5" />
+      <div className="relative bg-white/95 border-3 border-white rounded-lg p-5 shadow-lg backdrop-blur-sm">
+        {/* Decorative corners */}
+        <div className="absolute w-3 h-3 rounded-full border-2 border-white bg-stocrates-blue -top-1.5 -left-1.5" />
+        <div className="absolute w-3 h-3 rounded-full border-2 border-white bg-stocrates-blue -top-1.5 -right-1.5" />
+        <div className="absolute w-3 h-3 rounded-full border-2 border-white bg-stocrates-blue -bottom-1.5 -left-1.5" />
+        <div className="absolute w-3 h-3 rounded-full border-2 border-white bg-stocrates-blue -bottom-1.5 -right-1.5" />
+
+        <div className="flex items-start gap-3">
+          <TrendingUp className="h-6 w-6 text-stocrates-purple mt-0.5" />
           <div className="text-sm">
-            <p className="font-semibold text-blue-900 dark:text-blue-100">Practice Investing</p>
-            <p className="text-blue-700 dark:text-blue-300 text-xs mt-1">
+            <p className="font-title font-bold text-stocrates-dark">Practice Investing</p>
+            <p className="font-body text-stocrates-dark-blue text-xs mt-1">
               Select a stock and amount to invest. Your portfolio will track performance over time.
             </p>
           </div>
@@ -164,13 +170,13 @@ export function InvestmentPanel() {
           </div>
         )}
 
-        <Button
+        <button
           onClick={handleInvest}
-          className="w-full"
           disabled={!selectedStock || !amount || parseFloat(amount) <= 0 || !!error}
+          className="w-full font-game text-sm uppercase tracking-wide py-3 px-6 bg-gradient-to-r from-stocrates-purple to-stocrates-pink text-white border-3 border-stocrates-dark rounded-lg hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 shadow-lg"
         >
           🚀 Invest Now
-        </Button>
+        </button>
       </div>
     </div>
   )
