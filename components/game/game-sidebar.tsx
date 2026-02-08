@@ -27,7 +27,7 @@ export function GameSidebar() {
       {/* Sidebar */}
       <div
         className={cn(
-          'fixed left-0 top-0 h-full w-[480px] bg-background border-r shadow-2xl z-50 transition-transform duration-300 ease-in-out overflow-y-auto',
+          'fixed left-0 top-0 h-full w-full bg-background shadow-2xl z-50 transition-transform duration-300 ease-in-out overflow-y-auto',
           isGameOpen ? 'translate-x-0' : '-translate-x-full'
         )}
       >
