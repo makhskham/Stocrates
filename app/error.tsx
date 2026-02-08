@@ -17,7 +17,7 @@ export default function Error({ error, reset }: ErrorProps) {
       <div className="text-red-700 font-medium">Error: {error.message}</div>
       <div className="flex items-center mt-2">
         <a
-          href="https://github.com/Ahthe/TradeWise"
+          href="https://github.com/makhskham/Stocrates-2.0"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center text-sm text-red-800 hover:text-red-900"

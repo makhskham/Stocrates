@@ -4,9 +4,14 @@ import React, { useEffect, useRef, memo } from 'react'
 
 export function StockChart({ props: symbol }: { props: string }) {
   const container = useRef<HTMLDivElement>(null)
+  const scriptAdded = useRef(false)
 
   useEffect(() => {
-    if (!container.current) return
+    if (!container.current || scriptAdded.current) return
+
+    // Clear any existing content first
+    container.current.innerHTML = ''
+
     const script = document.createElement('script')
     script.src =
       'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js'
@@ -31,16 +36,18 @@ export function StockChart({ props: symbol }: { props: string }) {
     })
 
     container.current.appendChild(script)
+    scriptAdded.current = true
 
     return () => {
+      scriptAdded.current = false
       if (container.current) {
-        container.current.removeChild(script)
+        container.current.innerHTML = ''
       }
     }
   }, [symbol])
 
   return (
-    <div style={{ height: '500px' }}>
+    <div style={{ height: '500px', width: '100%' }}>
       <div
         className="tradingview-widget-container"
         ref={container}

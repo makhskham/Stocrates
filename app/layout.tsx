@@ -7,7 +7,9 @@ import { ThemeToggle } from '@/components/theme-toggle'
 import { Providers } from '@/components/providers'
 import { Header } from '@/components/header'
 import { Toaster } from '@/components/ui/sonner'
-import { Analytics } from "@vercel/analytics/react";
+import { Analytics } from "@vercel/analytics/react"
+import { GameProvider } from '@/lib/game/game-context'
+import { GameSidebar } from '@/components/game/game-sidebar'
 
 export const metadata = {
   metadataBase: process.env.VERCEL_URL
@@ -54,12 +56,15 @@ export default function RootLayout({ children }: RootLayoutProps) {
           enableSystem
           disableTransitionOnChange
         >
-          <div className="flex flex-col min-h-screen">
-            <Header />
-            <main className="flex flex-col flex-1 bg-muted/50">{children}</main>
-          </div>
-          {/* <ThemeToggle /> */}
-          <Analytics />
+          <GameProvider>
+            <div className="flex flex-col min-h-screen">
+              <Header />
+              <main className="flex flex-col flex-1 bg-muted/50">{children}</main>
+            </div>
+            <GameSidebar />
+            {/* <ThemeToggle /> */}
+            <Analytics />
+          </GameProvider>
         </Providers>
       </body>
     </html>
