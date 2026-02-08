@@ -28,6 +28,15 @@ function Navigation() {
       >
         New Chat
       </Link>
+      <Link
+        href="/events"
+        className={cn(
+          buttonVariants({ variant: 'ghost' }),
+          'text-sm font-medium text-muted-foreground hover:text-primary'
+        )}
+      >
+        📊 Event Analysis
+      </Link>
     </nav>
   )
 }
