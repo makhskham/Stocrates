@@ -32,6 +32,7 @@ export function GameSidebar() {
           isGameOpen ? 'translate-x-0' : '-translate-x-full'
         )}
       >
+        <div className="max-w-3xl mx-auto">
         {/* Header */}
         <div className="sticky top-0 bg-stocrates-blue border-b-3 border-stocrates-dark p-6 flex items-center justify-between z-10 shadow-lg">
           <div className="flex items-center gap-4">
@@ -60,17 +61,17 @@ export function GameSidebar() {
 
         {/* Stocrates Points Display - Game-y Design with Decorative Outline */}
         <div className="p-6">
-          <div className="relative border-3 border-stocrates-dark bg-white p-8 shadow-lg rounded-lg">
+          <div className="relative border-[3px] border-[#22271e] bg-white p-8 shadow-lg rounded-lg">
             {/* Decorative corner circles */}
-            <div className="absolute w-4 h-4 rounded-full border-3 border-stocrates-dark bg-stocrates-blue -top-2 -left-2 shadow-md" />
-            <div className="absolute w-4 h-4 rounded-full border-3 border-stocrates-dark bg-stocrates-blue -top-2 -right-2 shadow-md" />
-            <div className="absolute w-4 h-4 rounded-full border-3 border-stocrates-dark bg-stocrates-blue -bottom-2 -left-2 shadow-md" />
-            <div className="absolute w-4 h-4 rounded-full border-3 border-stocrates-dark bg-stocrates-blue -bottom-2 -right-2 shadow-md" />
+            <div className="absolute w-4 h-4 rounded-full border-[3px] border-[#22271e] bg-stocrates-blue -top-2 -left-2 shadow-md z-10" />
+            <div className="absolute w-4 h-4 rounded-full border-[3px] border-[#22271e] bg-stocrates-blue -top-2 -right-2 shadow-md z-10" />
+            <div className="absolute w-4 h-4 rounded-full border-[3px] border-[#22271e] bg-stocrates-blue -bottom-2 -left-2 shadow-md z-10" />
+            <div className="absolute w-4 h-4 rounded-full border-[3px] border-[#22271e] bg-stocrates-blue -bottom-2 -right-2 shadow-md z-10" />
             {/* Mid-point circles */}
-            <div className="absolute w-3 h-3 rounded-full border-2 border-stocrates-dark bg-stocrates-cream -top-1.5 left-1/2 -translate-x-1/2" />
-            <div className="absolute w-3 h-3 rounded-full border-2 border-stocrates-dark bg-stocrates-cream -bottom-1.5 left-1/2 -translate-x-1/2" />
-            <div className="absolute w-3 h-3 rounded-full border-2 border-stocrates-dark bg-stocrates-cream -left-1.5 top-1/2 -translate-y-1/2" />
-            <div className="absolute w-3 h-3 rounded-full border-2 border-stocrates-dark bg-stocrates-cream -right-1.5 top-1/2 -translate-y-1/2" />
+            <div className="absolute w-3 h-3 rounded-full border-2 border-[#22271e] bg-stocrates-cream -top-1.5 left-1/2 -translate-x-1/2 z-10" />
+            <div className="absolute w-3 h-3 rounded-full border-2 border-[#22271e] bg-stocrates-cream -bottom-1.5 left-1/2 -translate-x-1/2 z-10" />
+            <div className="absolute w-3 h-3 rounded-full border-2 border-[#22271e] bg-stocrates-cream -left-1.5 top-1/2 -translate-y-1/2 z-10" />
+            <div className="absolute w-3 h-3 rounded-full border-2 border-[#22271e] bg-stocrates-cream -right-1.5 top-1/2 -translate-y-1/2 z-10" />
 
             <div className="flex items-center justify-between">
               <div>
@@ -136,6 +137,7 @@ export function GameSidebar() {
               Practice investing strategies risk-free!
             </p>
           </div>
+        </div>
         </div>
       </div>
     </>

@@ -60,17 +60,17 @@ export function TimeMachine({ selectedDate, onDateChange, className }: TimeMachi
         )}
       </div>
 
-      <div className="relative p-6 bg-white rounded-lg border-3 border-stocrates-dark shadow-lg">
+      <div className="relative p-6 bg-white rounded-lg border-[3px] border-[#22271e] shadow-lg">
         {/* Decorative corner circles */}
-        <div className="absolute w-4 h-4 rounded-full border-3 border-stocrates-dark bg-stocrates-blue -top-2 -left-2 shadow-md" />
-        <div className="absolute w-4 h-4 rounded-full border-3 border-stocrates-dark bg-stocrates-blue -top-2 -right-2 shadow-md" />
-        <div className="absolute w-4 h-4 rounded-full border-3 border-stocrates-dark bg-stocrates-blue -bottom-2 -left-2 shadow-md" />
-        <div className="absolute w-4 h-4 rounded-full border-3 border-stocrates-dark bg-stocrates-blue -bottom-2 -right-2 shadow-md" />
+        <div className="absolute w-4 h-4 rounded-full border-[3px] border-[#22271e] bg-stocrates-blue -top-2 -left-2 shadow-md z-10" />
+        <div className="absolute w-4 h-4 rounded-full border-[3px] border-[#22271e] bg-stocrates-blue -top-2 -right-2 shadow-md z-10" />
+        <div className="absolute w-4 h-4 rounded-full border-[3px] border-[#22271e] bg-stocrates-blue -bottom-2 -left-2 shadow-md z-10" />
+        <div className="absolute w-4 h-4 rounded-full border-[3px] border-[#22271e] bg-stocrates-blue -bottom-2 -right-2 shadow-md z-10" />
         {/* Mid-point circles */}
-        <div className="absolute w-3 h-3 rounded-full border-2 border-stocrates-dark bg-stocrates-cream -top-1.5 left-1/2 -translate-x-1/2" />
-        <div className="absolute w-3 h-3 rounded-full border-2 border-stocrates-dark bg-stocrates-cream -bottom-1.5 left-1/2 -translate-x-1/2" />
-        <div className="absolute w-3 h-3 rounded-full border-2 border-stocrates-dark bg-stocrates-cream -left-1.5 top-1/2 -translate-y-1/2" />
-        <div className="absolute w-3 h-3 rounded-full border-2 border-stocrates-dark bg-stocrates-cream -right-1.5 top-1/2 -translate-y-1/2" />
+        <div className="absolute w-3 h-3 rounded-full border-2 border-[#22271e] bg-stocrates-cream -top-1.5 left-1/2 -translate-x-1/2 z-10" />
+        <div className="absolute w-3 h-3 rounded-full border-2 border-[#22271e] bg-stocrates-cream -bottom-1.5 left-1/2 -translate-x-1/2 z-10" />
+        <div className="absolute w-3 h-3 rounded-full border-2 border-[#22271e] bg-stocrates-cream -left-1.5 top-1/2 -translate-y-1/2 z-10" />
+        <div className="absolute w-3 h-3 rounded-full border-2 border-[#22271e] bg-stocrates-cream -right-1.5 top-1/2 -translate-y-1/2 z-10" />
         <div className="flex items-center justify-between mb-4 gap-2">
           <button
             onClick={goBackOneDay}
