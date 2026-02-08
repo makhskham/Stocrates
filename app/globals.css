@@ -1,0 +1,126 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Roboto:wght@300;400;500;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+ 
+@layer base {
+  :root {
+    /* Stocrates Color System */
+    --bg-cream: #fffcf0;
+    --text-dark: #22271e;
+    --accent-blue: #a7dcfa;
+    --dark-blue: #416072;
+    --light-gray: #efefef;
+    --accent-red: #fe502d;
+
+    /* Tailwind CSS Variables (mapped to Stocrates colors) */
+    --background: 48 100% 97%; /* cream */
+    --foreground: 100 13% 13%; /* dark text */
+
+    --card: 48 100% 97%;
+    --card-foreground: 100 13% 13%;
+
+    --popover: 48 100% 97%;
+    --popover-foreground: 100 13% 13%;
+
+    --primary: 100 13% 13%; /* dark text */
+    --primary-foreground: 48 100% 97%; /* cream */
+
+    --secondary: 197 87% 81%; /* accent blue */
+    --secondary-foreground: 100 13% 13%;
+
+    --muted: 0 0% 94%; /* light gray */
+    --muted-foreground: 197 26% 34%; /* dark blue */
+
+    --accent: 197 87% 81%; /* accent blue */
+    --accent-foreground: 100 13% 13%;
+
+    --destructive: 11 99% 59%; /* accent red */
+    --destructive-foreground: 48 100% 97%;
+
+    --border: 100 13% 13%;
+    --input: 0 0% 94%;
+    --ring: 197 26% 34%;
+
+    --radius: 0.5rem;
+
+    /* Fonts */
+    --font-title: 'Space Mono', monospace;
+    --font-body: 'Roboto', sans-serif;
+  }
+}
+ 
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body);
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-title);
+    font-weight: 700;
+  }
+}
+
+/* Stocrates Custom Styles */
+.title {
+  font-family: var(--font-title);
+}
+
+.body-text {
+  font-family: var(--font-body);
+}
+
+.game-button {
+  background: var(--text-dark);
+  color: var(--bg-cream);
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  font-family: var(--font-title);
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.game-button:hover {
+  background: var(--dark-blue);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.game-button:active {
+  transform: translateY(0);
+}
+
+.decorative-border {
+  border: 3px solid var(--text-dark);
+  position: relative;
+}
+
+.decorative-border::before,
+.decorative-border::after {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border: 3px solid var(--text-dark);
+  background: var(--bg-cream);
+  border-radius: 50%;
+}
+
+.decorative-border::before {
+  top: -6px;
+  left: -6px;
+}
+
+.decorative-border::after {
+  bottom: -6px;
+  right: -6px;
+}
