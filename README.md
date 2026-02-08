@@ -1,6 +1,6 @@
 # Stocrates
 
-> **Learn Markets Through Historical Patterns**
+> **Proven Past, Prepared Future**
 
 An educational AI-powered financial literacy platform that teaches beginners how markets react to real-world events using historical examples. Built with Next.js, Groq AI, and real-time market data.
 
