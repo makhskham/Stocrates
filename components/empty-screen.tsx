@@ -11,19 +11,19 @@ export function EmptyScreen() {
               Welcome to Stocrates!
             </h1>
             <p className="font-title text-xl text-stocrates-dark-blue">
-              Learn Markets Through Historical Patterns
+              Proven Past, Prepared Future
             </p>
           </div>
 
           <p className="font-body text-base text-stocrates-dark leading-relaxed">
-            I'm your educational guide to understanding how markets react to real-world events.
+            I'm your educational guide to understanding how markets react to real-world events using the Socratic method.
             Instead of making predictions, I'll show you <strong>transparent historical pattern analysis</strong> -
             teaching you how similar events played out in the past so you can learn to think critically about markets.
           </p>
 
           <div className="p-5 bg-stocrates-blue border-3 border-stocrates-dark rounded-lg">
             <p className="font-title text-sm font-bold mb-3 text-stocrates-dark">
-              🎯 What Makes Stocrates Different?
+              What Makes Stocrates Different?
             </p>
             <ul className="font-body text-sm space-y-2 text-stocrates-dark">
               <li>✅ <strong>Educational First</strong> - Learn concepts, not just data</li>
@@ -36,7 +36,7 @@ export function EmptyScreen() {
 
           <div className="p-5 bg-stocrates-gray border-2 border-stocrates-dark rounded-lg">
             <p className="font-title text-sm font-bold mb-3 text-stocrates-dark">
-              💡 Try asking educational questions:
+              Try asking educational questions:
             </p>
             <ul className="font-body text-sm space-y-2 text-stocrates-dark">
               <li>• "What happens when a tech company announces a partnership?"</li>

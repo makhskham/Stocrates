@@ -6,7 +6,7 @@ import { getMissingKeys } from '@/app/actions'
 
 
 export const metadata = {
-  title: 'Stocrates - Learn Markets Through History'
+  title: 'Stocrates - Proven Past, Prepared Future',
 }
 
 export default async function IndexPage() {

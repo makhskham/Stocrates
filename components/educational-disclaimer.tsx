@@ -13,7 +13,7 @@ export function EducationalDisclaimer({
   if (variant === 'minimal') {
     return (
       <div className={`text-xs text-muted-foreground italic mt-2 ${className}`}>
-        📚 Educational purposes only. Not financial advice.
+        Educational purposes only. Not financial advice.
       </div>
     )
   }
@@ -36,7 +36,7 @@ export function EducationalDisclaimer({
   // Default: inline variant
   return (
     <div className={`mt-2 text-xs text-muted-foreground border-l-2 border-yellow-500 pl-2 ${className}`}>
-      <strong>📚 Educational Note:</strong> This is for learning purposes only, not financial advice. 
+      <strong>Educational Note:</strong> This is for learning purposes only, not financial advice. 
       Past performance doesn't guarantee future results.
     </div>
   )
@@ -47,7 +47,7 @@ export function HistoricalPatternDisclaimer({ className = '' }: { className?: st
   return (
     <div className={`mt-3 p-3 bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200 dark:border-blue-800 ${className}`}>
       <div className="text-xs text-blue-900 dark:text-blue-100">
-        <strong>🔍 About Historical Patterns:</strong> Historical patterns help us learn how markets 
+        <strong>About Historical Patterns:</strong> Historical patterns help us learn how markets 
         have reacted in the past, but they don't predict the future. Every situation is unique, 
         and many factors influence market movements. Use this as a learning tool to develop your 
         own analytical skills.

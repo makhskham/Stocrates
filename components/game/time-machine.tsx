@@ -48,7 +48,7 @@ export function TimeMachine({ selectedDate, onDateChange, className }: TimeMachi
     <div className={cn('flex flex-col gap-3', className)}>
       <div className="flex items-center justify-between">
         <h3 className="font-title text-xl font-bold text-stocrates-dark flex items-center gap-2">
-          🕰️ Time Machine
+          Time Machine
         </h3>
         {!isToday && (
           <button
@@ -88,7 +88,7 @@ export function TimeMachine({ selectedDate, onDateChange, className }: TimeMachi
                   !isPast && 'bg-stocrates-cream text-stocrates-dark'
                 )}
               >
-                {isPast && '🕰️ '}
+                {isPast && ''}
                 {format(selectedDate, 'PPP')}
               </button>
             </PopoverTrigger>
@@ -112,26 +112,26 @@ export function TimeMachine({ selectedDate, onDateChange, className }: TimeMachi
 
         {isPast && (
           <div className="font-body text-xs text-center text-white bg-stocrates-dark-blue rounded-lg p-3 border-2 border-stocrates-dark">
-            ⚡ Time traveling to {format(selectedDate, 'MMMM d, yyyy')}
+            Time traveling to {format(selectedDate, 'MMMM d, yyyy')}
           </div>
         )}
 
         {isToday && (
           <div className="font-body text-xs text-center text-stocrates-dark bg-stocrates-blue rounded-lg p-3 border-2 border-stocrates-dark">
-            📅 You are in the present
+            You are in the present
           </div>
         )}
 
         {isFuture && (
           <div className="font-body text-xs text-center text-stocrates-dark bg-stocrates-gray rounded-lg p-3 border-2 border-stocrates-dark">
-            🔮 Future view: estimates will be based on historical patterns and recent news. Coming soon.
+            Future view: estimates will be based on historical patterns and recent news. Coming soon.
           </div>
         )}
       </div>
 
       <div className="bg-stocrates-blue/30 rounded-lg p-4">
         <p className="font-body text-xs text-stocrates-dark">
-          <strong className="font-title">💡 How it works:</strong> Select a date in the past to see historical stock prices
+          <strong className="font-title">How it works:</strong> Select a date in the past to see historical stock prices
           and events. "Invest" your Stockrates Points and see how your portfolio would have grown to today!
         </p>
       </div>

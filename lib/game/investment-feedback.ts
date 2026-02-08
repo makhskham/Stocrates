@@ -142,20 +142,20 @@ function generateLearningPoints(
 
   // Diversification learning
   if (portfolioSize === 0) {
-    points.push('📚 First Investment: You\'re starting your portfolio. Consider how many different positions you want to build.')
+    points.push('First Investment: You\'re starting your portfolio. Consider how many different positions you want to build.')
   } else if (portfolioSize < 3) {
-    points.push(`📊 Portfolio Size: You have ${portfolioSize} investment${portfolioSize > 1 ? 's' : ''}. Many experts suggest 5-10 positions for adequate diversification.`)
+    points.push(`Portfolio Size: You have ${portfolioSize} investment${portfolioSize > 1 ? 's' : ''}. Many experts suggest 5-10 positions for adequate diversification.`)
   }
 
   // Position sizing learning
   if (investmentPercentage > 25) {
-    points.push('⚖️ Position Sizing: You\'re allocating over 25% to one position. Ask yourself: What happens if this investment declines significantly?')
+    points.push('Position Sizing: You\'re allocating over 25% to one position. Ask yourself: What happens if this investment declines significantly?')
   } else if (investmentPercentage < 5) {
     points.push('🎯 Position Sizing: Small positions limit both potential gains and losses. Consider if this aligns with your learning goals.')
   }
 
   // Risk awareness
-  points.push(`🎲 Risk Level: ${riskLevel.toUpperCase()} - ${
+  points.push(`Risk Level: ${riskLevel.toUpperCase()} - ${
     riskLevel === 'high'
       ? 'High concentration means higher potential volatility'
       : riskLevel === 'medium'
@@ -164,7 +164,7 @@ function generateLearningPoints(
   }`)
 
   // Market condition awareness
-  points.push(`💡 Market Context: ${marketCondition}`)
+  points.push(`Market Context: ${marketCondition}`)
 
   return points
 }

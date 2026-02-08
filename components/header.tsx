@@ -45,7 +45,7 @@ function Navigation() {
           'text-sm font-medium text-muted-foreground hover:text-primary'
         )}
       >
-        📊 Event Analysis
+        Event Analysis
       </Link>
     </nav>
   )
@@ -59,9 +59,10 @@ export function Header() {
       <div className="container mx-auto px-4 flex h-16 items-center justify-between">
         <Navigation />
         <div className="flex items-center gap-4">
-          <div className="font-body text-sm text-stocrates-dark hidden md:block">
-            Learn Markets Through History 🎓
-          </div>
+          <div className="font-body text-sm text-stocrates-dark hidden md:block italic">
+  Proven Past, Prepared Future
+</div>
+
           <button
             onClick={toggleGame}
             className={cn(

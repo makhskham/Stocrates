@@ -28,7 +28,7 @@ export const SOURCE_CREDIBILITY = {
   },
   social: {
     weight: "10-30%",
-    sources: ["Twitter/X posts with high engagement", "Reddit discussions with upvotes", "YouTube videos with positive response", "Community sentiment"],
+    sources: ["Social media posts with high engagement", "Online community discussions", "Video content with positive response", "Community sentiment"],
     description: "Useful for sentiment but less reliable"
   }
 }

@@ -24,7 +24,7 @@ export function TransparencyPanel({ data }: TransparencyPanelProps) {
     return (
       <Card className="w-full">
         <CardHeader>
-          <CardTitle>🔍 Transparency Dashboard</CardTitle>
+          <CardTitle>Transparency Dashboard</CardTitle>
           <CardDescription>See how the analysis was calculated</CardDescription>
         </CardHeader>
         <CardContent>
@@ -60,7 +60,7 @@ export function TransparencyPanel({ data }: TransparencyPanelProps) {
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle>🔍 Transparency Dashboard</CardTitle>
+        <CardTitle>Transparency Dashboard</CardTitle>
         <CardDescription>
           How we calculated this analysis • {data.count} historical data points
         </CardDescription>
@@ -69,7 +69,7 @@ export function TransparencyPanel({ data }: TransparencyPanelProps) {
         {/* Data Sources */}
         <div className="space-y-3">
           <h3 className="font-semibold text-sm flex items-center gap-2">
-            <span>📊</span> Data Sources Used
+            <span></span> Data Sources Used
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div className="p-3 bg-muted rounded-lg">
@@ -96,7 +96,7 @@ export function TransparencyPanel({ data }: TransparencyPanelProps) {
         {/* Weight Distribution */}
         <div className="space-y-3">
           <h3 className="font-semibold text-sm flex items-center gap-2">
-            <span>⚖️</span> How Metrics Were Weighted
+            <span></span> How Metrics Were Weighted
           </h3>
           <div className="space-y-4">
             {weightData.map((item) => (
@@ -117,7 +117,7 @@ export function TransparencyPanel({ data }: TransparencyPanelProps) {
         {/* Methodology Explanation */}
         <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950 rounded-lg border border-blue-200 dark:border-blue-800">
           <h4 className="text-sm font-semibold mb-2 text-blue-900 dark:text-blue-100">
-            🧮 Our Calculation Method
+            Our Calculation Method
           </h4>
           <p className="text-xs text-blue-800 dark:text-blue-200 leading-relaxed">
             {data.weights.explanation}
@@ -142,7 +142,7 @@ export function TransparencyPanel({ data }: TransparencyPanelProps) {
         {data.rawMetrics?.moves?.length ? (
           <div className="space-y-2">
             <h3 className="font-semibold text-sm flex items-center gap-2">
-              <span>📋</span> Sample Raw Data (First 5 Events)
+              <span></span> Sample Raw Data (First 5 Events)
             </h3>
             <div className="overflow-x-auto">
               <table className="w-full text-xs">

@@ -11,6 +11,7 @@ import { createGroq } from '@ai-sdk/groq'
 
 import { BotCard, BotMessage } from '@/components/stocks/message'
 import { Caption } from '@/components/stocks/caption'
+import { ConfidenceDisplay } from '@/components/ui/confidence-display'
 
 import { z } from 'zod'
 import { nanoid } from '@/lib/utils'
@@ -45,23 +46,60 @@ interface MutableAIState {
 }
 
 // Token usage optimization:
-// - Using llama-3.1-8b-instant (current) for significant token savings (faster, cheaper)
-// - Switch to 'llama-3.3-70b-versatile' for better responses but uses more tokens
-// - Captions are disabled by default to save tokens (see generateCaption function)
-const MODEL = 'llama-3.1-8b-instant'
-const TOOL_MODEL = 'llama-3.1-8b-instant'
+// - Using llama-3.3-70b-versatile for educational responses with Socratic method
+// - This provides better quality teaching and analysis
+const MODEL = 'llama-3.3-70b-versatile'
+const TOOL_MODEL = 'llama-3.3-70b-versatile'
 const GROQ_API_KEY_ENV = process.env.GROQ_API_KEY
+
+// Helper function to parse confidence levels from AI response
+function parseConfidenceLevels(text: string): { credible: number; social: number } | null {
+  // Match patterns like:
+  // • Credible sources (Bloomberg, Reuters, WSJ, Yahoo Finance): 68%
+  // • Social sentiment (social media platforms): 82%
+  const credibleMatch = text.match(/credible sources[^:]*:\s*(\d+)%/i)
+  const socialMatch = text.match(/social sentiment[^:]*:\s*(\d+)%/i)
+
+  if (credibleMatch && socialMatch) {
+    return {
+      credible: parseInt(credibleMatch[1]),
+      social: parseInt(socialMatch[1])
+    }
+  }
+  return null
+}
+
+// Helper function to render caption with confidence display
+function renderCaptionWithConfidence(caption: string) {
+  const confidence = parseConfidenceLevels(caption)
+
+  if (confidence) {
+    // Remove the confidence levels text from the caption
+    const cleanedCaption = caption
+      .replace(/📊\s*\*\*Confidence Levels:\*\*[\s\S]*?(?=\n\n|📰|🤔|📚|$)/i, '')
+      .trim()
+
+    return (
+      <>
+        <Caption>{cleanedCaption}</Caption>
+        <div className="mt-4">
+          <ConfidenceDisplay
+            crediblePercent={confidence.credible}
+            socialPercent={confidence.social}
+          />
+        </div>
+      </>
+    )
+  }
+
+  return <Caption>{caption}</Caption>
+}
 
 async function generateCaption(
   symbol: string,
   toolName: string,
   aiState: MutableAIState
 ): Promise<string> {
-  // Disabled to save tokens - captions were consuming too many API tokens
-  // Re-enable by uncommenting the code below if you have higher token limits
-  return ''
-  
-  /* TOKEN-HEAVY CODE - COMMENTED OUT TO SAVE TOKENS
   const groq = createGroq({
     apiKey: GROQ_API_KEY_ENV
   })
@@ -135,7 +173,7 @@ Like Socrates who taught through guided questioning, you help users discover ins
 - Bloomberg, Reuters, WSJ: 75-85% (Professional journalism with fact-checking)
 - Yahoo Finance, DeepStock, EquityPandit: 70-80% (Financial data platforms)
 - Tickertape, Trending Neurons: 65-75% (Analysis platforms)
-- Reddit, Twitter/X: 20-30% (Useful for sentiment, but less reliable for facts)
+- Social media platforms: 20-30% (Useful for sentiment, but less reliable for facts)
 
 These are the tools you have available:
 1. showStockFinancials - Shows the financials for a given stock
@@ -181,16 +219,16 @@ Based on this historical pattern and current news sentiment, we predict the stoc
 
 📊 **Confidence Levels:**
 • Credible sources (Bloomberg, Reuters, WSJ, Yahoo Finance): 68%
-• Social sentiment (Reddit, Twitter): 82%
+• Social sentiment (social media platforms): 82%
 
 📰 **Sources Analyzed:**
 • Reuters: "Tesla announces $5B factory expansion" (Weight: 80% - Very credible)
 • Yahoo Finance: Multiple analyst upgrades (Weight: 75% - Credible)
 • Bloomberg: Production capacity analysis (Weight: 80% - Very credible)
-• r/WallStreetBets: Community sentiment positive (Weight: 25% - Less credible but useful for sentiment)
+• Social media: Community sentiment positive (Weight: 25% - Less credible but useful for sentiment)
 
 **Why These Weights?**
-Major news outlets like Reuters and Bloomberg have fact-checkers and editorial standards, so we trust them more (75-85% weight). Social media like Reddit can show how people feel, but it's less reliable for facts (20-30% weight).
+Major news outlets like Reuters and Bloomberg have fact-checkers and editorial standards, so we trust them more (75-85% weight). Social media can show how people feel, but it's less reliable for facts (20-30% weight).
 
 📚 Educational analysis only - practice with Stocrates Points to learn risk-free!"
 
@@ -209,16 +247,16 @@ Based on similar AI product launches in the tech sector and current news sentime
 
 📊 **Confidence Levels:**
 • Credible sources (Bloomberg, Reuters, WSJ, Yahoo Finance): 71%
-• Social sentiment (Reddit, Twitter): 76%
+• Social sentiment (social media platforms): 76%
 
 📰 **Sources Analyzed:**
 • Bloomberg: "Apple's AI push gains momentum" (Weight: 85% - Very credible)
 • WSJ: Market analysis and earnings reports (Weight: 80% - Very credible)
 • Yahoo Finance: Analyst price targets (Weight: 75% - Credible)
-• Twitter/X: Tech community buzz and reviews (Weight: 20% - Less credible)
+• Social media: Tech community buzz and reviews (Weight: 20% - Less credible)
 
 **Why These Weights?**
-Bloomberg and WSJ are professional financial news organizations with strict fact-checking (80-85% weight). Twitter shows public opinion but can spread rumors easily (20% weight).
+Bloomberg and WSJ are professional financial news organizations with strict fact-checking (80-85% weight). Social media shows public opinion but can spread rumors easily (20% weight).
 
 📚 Educational purposes only - practice with Stocrates Points to learn without risk!"
 
@@ -262,7 +300,6 @@ Bloomberg and WSJ are professional financial news organizations with strict fact
   } catch (err) {
     return '' // Send tool use without caption.
   }
-  */
 }
 
 async function submitUserMessage(content: string) {
@@ -457,7 +494,7 @@ Redirect to education: "I can't tell you what to invest in, but I can teach you 
               <BotCard>
                 <div className="space-y-4">
                   <StockChart props={symbol} />
-                  {caption && <Caption>{caption}</Caption>}
+                  {caption && renderCaptionWithConfidence(caption)}
                 </div>
               </BotCard>
             )
@@ -516,7 +553,7 @@ Redirect to education: "I can't tell you what to invest in, but I can teach you 
               <BotCard>
                 <div className="space-y-4">
                   <StockPrice props={symbol} />
-                  {caption && <Caption>{caption}</Caption>}
+                  {caption && renderCaptionWithConfidence(caption)}
                 </div>
               </BotCard>
             )
@@ -576,7 +613,7 @@ Redirect to education: "I can't tell you what to invest in, but I can teach you 
               <BotCard>
                 <div className="space-y-4">
                   <StockFinancials props={symbol} />
-                  {caption && <Caption>{caption}</Caption>}
+                  {caption && renderCaptionWithConfidence(caption)}
                 </div>
               </BotCard>
             )
@@ -636,7 +673,7 @@ Redirect to education: "I can't tell you what to invest in, but I can teach you 
               <BotCard>
                 <div className="space-y-4">
                   <StockNews props={symbol} />
-                  {caption && <Caption>{caption}</Caption>}
+                  {caption && renderCaptionWithConfidence(caption)}
                 </div>
               </BotCard>
             )
@@ -689,7 +726,7 @@ Redirect to education: "I can't tell you what to invest in, but I can teach you 
               <BotCard>
                 <div className="space-y-4">
                   <StockScreener />
-                  {caption && <Caption>{caption}</Caption>}
+                  {caption && renderCaptionWithConfidence(caption)}
                 </div>
               </BotCard>
             )
@@ -741,7 +778,7 @@ Redirect to education: "I can't tell you what to invest in, but I can teach you 
               <BotCard>
                 <div className="space-y-4">
                   <MarketOverview />
-                  {caption && <Caption>{caption}</Caption>}
+                  {caption && renderCaptionWithConfidence(caption)}
                 </div>
               </BotCard>
             )
@@ -793,7 +830,7 @@ Redirect to education: "I can't tell you what to invest in, but I can teach you 
               <BotCard>
                 <div className="space-y-4">
                   <MarketHeatmap />
-                  {caption && <Caption>{caption}</Caption>}
+                  {caption && renderCaptionWithConfidence(caption)}
                 </div>
               </BotCard>
             )
@@ -845,7 +882,7 @@ Redirect to education: "I can't tell you what to invest in, but I can teach you 
               <BotCard>
                 <div className="space-y-4">
                   <ETFHeatmap />
-                  {caption && <Caption>{caption}</Caption>}
+                  {caption && renderCaptionWithConfidence(caption)}
                 </div>
               </BotCard>
             )
@@ -897,7 +934,7 @@ Redirect to education: "I can't tell you what to invest in, but I can teach you 
               <BotCard>
                 <div className="space-y-4">
                   <MarketTrending />
-                  {caption && <Caption>{caption}</Caption>}
+                  {caption && renderCaptionWithConfidence(caption)}
                 </div>
               </BotCard>
             )

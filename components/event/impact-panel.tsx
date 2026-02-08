@@ -2,6 +2,8 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { ConfidenceMeter } from '@/components/ui/confidence-meter'
+import { Term } from '@/components/ui/financial-term'
 
 interface ImpactPanelProps {
   data: {
@@ -21,7 +23,7 @@ export function ImpactPanel({ data }: ImpactPanelProps) {
     return (
       <Card className="w-full">
         <CardHeader>
-          <CardTitle>📈 Historical Impact Analysis</CardTitle>
+          <CardTitle>Historical Impact Analysis</CardTitle>
           <CardDescription>Select an event type to see historical data</CardDescription>
         </CardHeader>
         <CardContent>
@@ -49,7 +51,7 @@ export function ImpactPanel({ data }: ImpactPanelProps) {
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle>📈 Historical Impact Analysis</CardTitle>
+        <CardTitle>Historical Impact Analysis</CardTitle>
         <CardDescription>
           Based on {data.count} similar historical events
         </CardDescription>
@@ -58,28 +60,34 @@ export function ImpactPanel({ data }: ImpactPanelProps) {
         {/* Key Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="p-4 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 rounded-lg">
-            <p className="text-sm font-medium text-blue-900 dark:text-blue-100">Average Move</p>
+            <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
+              <Term.AverageMove />
+            </p>
             <p className={`text-3xl font-bold ${getSentimentColor(data.averageMovePercent)}`}>
               {data.averageMovePercent > 0 ? '+' : ''}
               {data.averageMovePercent.toFixed(2)}%
             </p>
             <p className="text-xs text-blue-700 dark:text-blue-300 mt-1">
-              {data.averageMovePercent > 0 ? '📈 Historically bullish' : '📉 Historically bearish'}
+              {data.averageMovePercent > 0 ? 'Historically bullish' : 'Historically bearish'}
             </p>
           </div>
 
           <div className="p-4 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900 rounded-lg">
-            <p className="text-sm font-medium text-purple-900 dark:text-purple-100">Average Range</p>
+            <p className="text-sm font-medium text-purple-900 dark:text-purple-100">
+              <Term.AverageRange />
+            </p>
             <p className="text-3xl font-bold text-purple-600 dark:text-purple-400">
               {data.averageRange.toFixed(2)}
             </p>
             <p className="text-xs text-purple-700 dark:text-purple-300 mt-1">
-              Price volatility indicator
+              Price <Term.Volatility>volatility</Term.Volatility> indicator
             </p>
           </div>
 
           <div className="p-4 bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950 dark:to-amber-900 rounded-lg">
-            <p className="text-sm font-medium text-amber-900 dark:text-amber-100">Pattern Reliability</p>
+            <p className="text-sm font-medium text-amber-900 dark:text-amber-100">
+              <Term.PatternReliability />
+            </p>
             <p className="text-3xl font-bold text-amber-600 dark:text-amber-400">
               {data.patternReliability.overall.toFixed(0)}%
             </p>
@@ -89,9 +97,20 @@ export function ImpactPanel({ data }: ImpactPanelProps) {
           </div>
         </div>
 
+        {/* Pattern Confidence Visualization */}
+        <div className="flex justify-center py-4 bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 rounded-lg">
+          <ConfidenceMeter
+            value={data.patternReliability.overall}
+            label="Pattern Reliability"
+            size="lg"
+          />
+        </div>
+
         {/* Pattern Breakdown */}
         <div className="space-y-2">
-          <h3 className="font-semibold text-sm">Pattern Reliability by Type</h3>
+          <h3 className="font-semibold text-sm">
+            <Term.PatternReliability>Pattern Reliability</Term.PatternReliability> by Type
+          </h3>
           <div className="space-y-2">
             {Object.entries(data.patternReliability.byPattern).map(([pattern, stats]) => (
               <div key={pattern} className="flex items-center justify-between p-3 bg-muted rounded-lg">

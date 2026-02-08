@@ -42,7 +42,7 @@ export async function fetchHistoricalPrice(
   // Check cache
   const cached = priceCache.get(cacheKey)
   if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
-    console.log(`📦 Using cached price for ${symbol} on ${dateStr}: $${cached.price}`)
+    console.log(`Using cached price for ${symbol} on ${dateStr}: $${cached.price}`)
     return cached.price
   }
 
@@ -79,7 +79,7 @@ export async function fetchHistoricalPrice(
 
     // Check if we got valid data
     if (data.s !== 'ok' || !data.c || data.c.length === 0) {
-      console.warn(`⚠️ No historical data available for ${symbol} on ${dateStr}`)
+      console.warn(`No historical data available for ${symbol} on ${dateStr}`)
       return null
     }
 
@@ -132,6 +132,6 @@ export async function fetchHistoricalPrices(
  */
 export function clearPriceCache(): void {
   priceCache.clear()
-  console.log('🗑️ Price cache cleared')
+  console.log('Price cache cleared')
 }
 

@@ -2,7 +2,7 @@
  * Stock Price Prediction Service
  * Uses AI to analyze news and generate fun predictions with confidence levels
  * 
- * ⚠️ DISCLAIMER: This is NOT financial advice. Predictions are for educational
+ * DISCLAIMER: This is NOT financial advice. Predictions are for educational
  * and entertainment purposes only. Do not use for actual investment decisions.
  */
 

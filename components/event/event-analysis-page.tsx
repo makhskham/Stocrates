@@ -4,7 +4,10 @@ import { useState } from 'react'
 import { EventInput } from '@/components/event/event-input'
 import { ImpactPanel } from '@/components/event/impact-panel'
 import { TransparencyPanel } from '@/components/event/transparency-panel'
+import { Button } from '@/components/ui/button'
+import { Download } from 'lucide-react'
 import { toast } from 'sonner'
+import { exportEventAnalysisToCSV } from '@/lib/utils/csv-export'
 
 interface AnalysisData {
   count: number
@@ -31,10 +34,12 @@ export function EventAnalysisPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [analysisData, setAnalysisData] = useState<AnalysisData | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [currentFilters, setCurrentFilters] = useState<{ pattern?: string; eventType?: string }>({})
 
   const handleAnalyze = async (pattern?: string, eventType?: string) => {
     setIsLoading(true)
     setError(null)
+    setCurrentFilters({ pattern, eventType })
 
     try {
       // Build query parameters
@@ -91,14 +96,46 @@ export function EventAnalysisPage() {
     }
   }
 
+  const handleExportCSV = () => {
+    if (!analysisData) {
+      toast.error('No data to export. Please run an analysis first.')
+      return
+    }
+
+    try {
+      exportEventAnalysisToCSV(analysisData, currentFilters)
+      toast.success('✅ CSV file downloaded successfully!')
+    } catch (err) {
+      toast.error('❌ Failed to export CSV. Please try again.')
+      console.error('Error exporting CSV:', err)
+    }
+  }
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       {/* Header */}
-      <div className="mb-8 text-center">
-        <h1 className="text-4xl font-bold mb-2">📊 Event Impact Analyzer</h1>
-        <p className="text-lg text-muted-foreground">
-          Learn how markets historically reacted to real-world events
-        </p>
+      <div className="mb-8">
+        <div className="text-center mb-4">
+          <h1 className="text-4xl font-bold mb-2">Event Impact Analyzer</h1>
+          <p className="text-lg text-muted-foreground">
+            Learn how markets historically reacted to real-world events
+          </p>
+        </div>
+
+        {/* Export Button */}
+        {analysisData && (
+          <div className="flex justify-center">
+            <Button
+              onClick={handleExportCSV}
+              variant="outline"
+              size="sm"
+              className="gap-2"
+            >
+              <Download className="h-4 w-4" />
+              Export to CSV
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* Error Display */}
@@ -132,24 +169,24 @@ export function EventAnalysisPage() {
 
       {/* Educational Footer */}
       <div className="mt-12 p-6 bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50 dark:from-blue-950 dark:via-purple-950 dark:to-pink-950 rounded-lg border-2 border-blue-200 dark:border-blue-800">
-        <h3 className="text-lg font-semibold mb-3 text-center">🎓 Learning Objectives</h3>
+        <h3 className="text-lg font-semibold mb-3 text-center">Learning Objectives</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
           <div className="text-center">
-            <div className="text-2xl mb-2">📚</div>
+            <div className="text-2xl mb-2"></div>
             <strong>Understand Patterns</strong>
             <p className="text-muted-foreground mt-1">
               Learn to recognize common market behaviors
             </p>
           </div>
           <div className="text-center">
-            <div className="text-2xl mb-2">🔍</div>
+            <div className="text-2xl mb-2"></div>
             <strong>Think Critically</strong>
             <p className="text-muted-foreground mt-1">
               Question assumptions and verify sources
             </p>
           </div>
           <div className="text-center">
-            <div className="text-2xl mb-2">⚖️</div>
+            <div className="text-2xl mb-2"></div>
             <strong>Assess Risk</strong>
             <p className="text-muted-foreground mt-1">
               Understand uncertainty in financial markets
