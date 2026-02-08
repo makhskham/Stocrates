@@ -45,11 +45,11 @@ interface MutableAIState {
 }
 
 // Token usage optimization:
-// - Using llama-3.3-70b-versatile (current) uses more tokens but gives better responses
-// - Switch to 'llama-3.1-8b-instant' for significant token savings (faster, cheaper, but less detailed)
+// - Using llama-3.1-8b-instant (current) for significant token savings (faster, cheaper)
+// - Switch to 'llama-3.3-70b-versatile' for better responses but uses more tokens
 // - Captions are disabled by default to save tokens (see generateCaption function)
-const MODEL = 'llama-3.3-70b-versatile'
-const TOOL_MODEL = 'llama-3.3-70b-versatile'
+const MODEL = 'llama-3.1-8b-instant'
+const TOOL_MODEL = 'llama-3.1-8b-instant'
 const GROQ_API_KEY_ENV = process.env.GROQ_API_KEY
 
 async function generateCaption(

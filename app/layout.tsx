@@ -49,6 +49,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           GeistSans.variable,
           GeistMono.variable
         )}
+        suppressHydrationWarning
       >
         <Toaster position="top-center" />
         <Providers
