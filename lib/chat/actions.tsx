@@ -44,6 +44,10 @@ interface MutableAIState {
   get: () => AIState
 }
 
+// Token usage optimization:
+// - Using llama-3.3-70b-versatile (current) uses more tokens but gives better responses
+// - Switch to 'llama-3.1-8b-instant' for significant token savings (faster, cheaper, but less detailed)
+// - Captions are disabled by default to save tokens (see generateCaption function)
 const MODEL = 'llama-3.3-70b-versatile'
 const TOOL_MODEL = 'llama-3.3-70b-versatile'
 const GROQ_API_KEY_ENV = process.env.GROQ_API_KEY
@@ -53,6 +57,11 @@ async function generateCaption(
   toolName: string,
   aiState: MutableAIState
 ): Promise<string> {
+  // Disabled to save tokens - captions were consuming too many API tokens
+  // Re-enable by uncommenting the code below if you have higher token limits
+  return ''
+  
+  /* TOKEN-HEAVY CODE - COMMENTED OUT TO SAVE TOKENS
   const groq = createGroq({
     apiKey: GROQ_API_KEY_ENV
   })
@@ -253,6 +262,7 @@ Bloomberg and WSJ are professional financial news organizations with strict fact
   } catch (err) {
     return '' // Send tool use without caption.
   }
+  */
 }
 
 async function submitUserMessage(content: string) {
