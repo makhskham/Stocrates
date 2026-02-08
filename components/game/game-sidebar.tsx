@@ -9,6 +9,7 @@ import { X } from 'lucide-react'
 import { TimeMachine } from './time-machine'
 import { InvestmentPanel } from './investment-panel'
 import { PortfolioView } from './portfolio-view'
+import { FuturePredictionView } from './future-prediction-view'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 export function GameSidebar() {
@@ -102,31 +103,45 @@ export function GameSidebar() {
             onDateChange={setSelectedDate}
           />
 
-          {/* Tabs for Investment and Portfolio */}
-          <Tabs defaultValue="invest" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 bg-white p-1 border-3 border-stocrates-dark shadow-lg">
-              <TabsTrigger
-                value="invest"
-                className="font-title text-sm data-[state=active]:bg-stocrates-dark data-[state=active]:text-stocrates-cream"
-              >
-                📈 Invest
-              </TabsTrigger>
-              <TabsTrigger
-                value="portfolio"
-                className="font-title text-sm data-[state=active]:bg-stocrates-dark data-[state=active]:text-stocrates-cream"
-              >
-                💼 Portfolio ({gameState.portfolio.investments.length})
-              </TabsTrigger>
-            </TabsList>
+          {/* Tabs for Investment and Portfolio (or Future Predictions if future date) */}
+          {gameState.selectedDate > new Date() ? (
+            // Future Date: Show Predictions
+            <div className="space-y-4">
+              <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg p-4 text-center">
+                <h3 className="font-title text-xl font-bold mb-1">🔮 Future Prediction Mode</h3>
+                <p className="text-sm opacity-90">
+                  Generate AI-powered price predictions based on historical patterns and news
+                </p>
+              </div>
+              <FuturePredictionView />
+            </div>
+          ) : (
+            // Current or Past Date: Show Normal Tabs
+            <Tabs defaultValue="invest" className="w-full">
+              <TabsList className="grid w-full grid-cols-2 bg-white p-1 border-3 border-stocrates-dark shadow-lg">
+                <TabsTrigger
+                  value="invest"
+                  className="font-title text-sm data-[state=active]:bg-stocrates-dark data-[state=active]:text-stocrates-cream"
+                >
+                  📈 Invest
+                </TabsTrigger>
+                <TabsTrigger
+                  value="portfolio"
+                  className="font-title text-sm data-[state=active]:bg-stocrates-dark data-[state=active]:text-stocrates-cream"
+                >
+                  💼 Portfolio ({gameState.portfolio.investments.length})
+                </TabsTrigger>
+              </TabsList>
 
-            <TabsContent value="invest" className="mt-4">
-              <InvestmentPanel />
-            </TabsContent>
+              <TabsContent value="invest" className="mt-4">
+                <InvestmentPanel />
+              </TabsContent>
 
-            <TabsContent value="portfolio" className="mt-4">
-              <PortfolioView />
-            </TabsContent>
-          </Tabs>
+              <TabsContent value="portfolio" className="mt-4">
+                <PortfolioView />
+              </TabsContent>
+            </Tabs>
+          )}
         </div>
 
         {/* Footer */}

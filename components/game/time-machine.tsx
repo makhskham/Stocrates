@@ -123,8 +123,8 @@ export function TimeMachine({ selectedDate, onDateChange, className }: TimeMachi
         )}
 
         {isFuture && (
-          <div className="font-body text-xs text-center text-stocrates-dark bg-stocrates-gray rounded-lg p-3 border-2 border-stocrates-dark">
-            Future view: estimates will be based on historical patterns and recent news. Coming soon.
+          <div className="font-body text-xs text-center text-white bg-gradient-to-r from-purple-600 to-indigo-600 rounded-lg p-3 border-2 border-stocrates-dark">
+            Future view active: estimates use historical patterns and recent news
           </div>
         )}
       </div>

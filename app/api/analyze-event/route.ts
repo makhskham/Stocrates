@@ -15,7 +15,7 @@ export async function GET() {
   // Fetch real stock data (Apple)
   const aggs = await getPolygonCandles("AAPL", 5, "minute");
 
-  // Convert candles → detected trading events
+  // Convert candles -> detected trading events
   const events: EventItem[] = polygonToEvents(aggs);
 
   const count = events.length;

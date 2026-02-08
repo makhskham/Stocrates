@@ -104,6 +104,7 @@ async function generateCaption(
     apiKey: GROQ_API_KEY_ENV
   })
 
+
   aiState.update({
     ...aiState.get(),
     messages: [...aiState.get().messages]
@@ -283,7 +284,7 @@ Bloomberg and WSJ are professional financial news organizations with strict fact
 
   try {
     const response = await generateText({
-      model: groq(MODEL),
+      model: openai(MODEL),  // Change to groq(MODEL) if using Groq
       messages: [
         {
           role: 'system',
@@ -326,6 +327,10 @@ async function submitUserMessage(content: string) {
     const groq = createGroq({
       apiKey: GROQ_API_KEY_ENV
     })
+
+    if (!GROQ_API_KEY_ENV) {
+      throw new Error('GROQ_API_KEY is not set in environment variables')
+    }
 
     const result = await streamUI({
       model: groq(TOOL_MODEL),
@@ -948,16 +953,37 @@ Redirect to education: "I can't tell you what to invest in, but I can teach you 
       display: result.value
     }
   } catch (err: any) {
-    // If key is missing, show error message that Groq API Key is missing.
-    if (err.message.includes('Groq API key is missing.')) {
-      err.message =
-        'Groq API key is missing. Pass it using the GROQ_API_KEY environment variable. Try restarting the application if you recently changed your environment variables.'
+    // Enhanced error handling for both OpenAI and Groq
+    let errorMessage = err.message || 'An unknown error occurred'
+    
+    if (err.message?.includes('Groq API key is missing') || err.message?.includes('GROQ_API_KEY')) {
+      errorMessage = 'Groq API key is missing. Pass it using the GROQ_API_KEY environment variable.'
+    } else if (err.message?.includes('OPENAI_API_KEY') || !OPENAI_API_KEY) {
+      errorMessage = 'OpenAI API key is missing or invalid. Check your OPENAI_API_KEY in .env.local file.'
+    } else if (err.message?.includes('API key')) {
+      errorMessage = `API Authentication Error: ${err.message}. Please verify your OPENAI_API_KEY is correct.`
+    } else if (err.message?.includes('Rate limit') || err.message?.includes('quota')) {
+      errorMessage = `Rate Limit Error: ${err.message}`
     }
+    
+    console.error('AI Error:', err)
+    
     return {
       id: nanoid(),
       display: (
-        <div className="border p-4">
-          <div className="text-red-700 font-medium">Error: {err.message}</div>
+        <div className="border p-4 rounded-lg bg-red-50">
+          <div className="text-red-700 font-medium mb-2">Error: {errorMessage}</div>
+          <div className="text-sm text-red-600 mb-2">
+            Full error: {JSON.stringify(err, null, 2)}
+          </div>
+          <div className="text-sm text-gray-600 mt-2">
+            💡 Quick fixes:
+            <ul className="list-disc ml-5 mt-1">
+              <li>Verify your OPENAI_API_KEY in .env.local is correct</li>
+              <li>Restart the dev server after changing .env.local</li>
+              <li>Check if your OpenAI account has credits: https://platform.openai.com/usage</li>
+            </ul>
+          </div>
           <a
             href="https://github.com/makhskham/Stocrates-2.0"
             target="_blank"
