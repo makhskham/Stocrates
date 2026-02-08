@@ -686,7 +686,7 @@ Redirect to education: "I can't tell you what to invest in, but I can teach you 
         },
         showMarketOverview: {
           description: `This tool shows an overview of today's stock, futures, bond, and forex market performance including change values, Open, High, Low, and Close values.`,
-          parameters: z.object({}),
+          parameters: z.object({}).optional(),
           generate: async function* ({}) {
             const toolCallId = nanoid()
 
@@ -738,7 +738,7 @@ Redirect to education: "I can't tell you what to invest in, but I can teach you 
         },
         showMarketHeatmap: {
           description: `This tool shows a heatmap of today's stock market performance across sectors. It is preferred over showMarketOverview if asked specifically about the stock market.`,
-          parameters: z.object({}),
+          parameters: z.object({}).optional(),
           generate: async function* ({}) {
             const toolCallId = nanoid()
 
@@ -790,7 +790,7 @@ Redirect to education: "I can't tell you what to invest in, but I can teach you 
         },
         showETFHeatmap: {
           description: `This tool shows a heatmap of today's ETF performance across sectors and asset classes. It is preferred over showMarketOverview if asked specifically about the ETF market.`,
-          parameters: z.object({}),
+          parameters: z.object({}).optional(),
           generate: async function* ({}) {
             const toolCallId = nanoid()
 
@@ -842,7 +842,7 @@ Redirect to education: "I can't tell you what to invest in, but I can teach you 
         },
         showTrendingStocks: {
           description: `This tool shows the daily top trending stocks including the top five gaining, losing, and most active stocks based on today's performance`,
-          parameters: z.object({}),
+          parameters: z.object({}).optional(),
           generate: async function* ({}) {
             const toolCallId = nanoid()
 
