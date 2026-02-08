@@ -9,6 +9,9 @@ export function MarketTrending({}) {
   useEffect(() => {
     if (!container.current || scriptAdded.current) return
 
+    // Clear any existing content to prevent duplicates
+    container.current.innerHTML = ''
+
     const script = document.createElement('script')
     script.src =
       'https://s3.tradingview.com/external-embedding/embed-widget-hotlists.js'
@@ -57,17 +60,8 @@ export function MarketTrending({}) {
       >
         <div
           className="tradingview-widget-container__widget"
-          style={{ height: 'calc(100% - 32px)', width: '100%' }}
+          style={{ height: '100%', width: '100%' }}
         ></div>
-        <div className="tradingview-widget-copyright">
-          <a
-            href="https://www.tradingview.com/"
-            rel="noopener nofollow"
-            target="_blank"
-          >
-            <span className="">Track all markets on TradingView</span>
-          </a>
-        </div>
       </div>
     </div>
   )
