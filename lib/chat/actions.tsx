@@ -10,6 +10,7 @@ import {
 import { createGroq } from '@ai-sdk/groq'
 
 import { BotCard, BotMessage } from '@/components/stocks/message'
+import { Caption } from '@/components/stocks/caption'
 
 import { z } from 'zod'
 import { nanoid } from '@/lib/utils'
@@ -25,6 +26,7 @@ import { MarketHeatmap } from '@/components/tradingview/market-heatmap'
 import { MarketTrending } from '@/components/tradingview/market-trending'
 import { ETFHeatmap } from '@/components/tradingview/etf-heatmap'
 import { toast } from 'sonner'
+import { fetchStockNews, formatNewsAnalysis } from '@/lib/news/news-fetcher'
 
 export type AIState = {
   chatId: string
@@ -60,29 +62,63 @@ async function generateCaption(
     messages: [...aiState.get().messages]
   })
 
+  // Fetch real news data for the symbol
+  let newsContext = ''
+  if (symbol !== 'Generic') {
+    try {
+      const newsAnalysis = await fetchStockNews(symbol, 30)
+      newsContext = `
+
+## Real News Data (Past 30 Days):
+${formatNewsAnalysis(newsAnalysis, symbol)}
+
+Top Articles:
+${newsAnalysis.articles.slice(0, 5).map((article, i) =>
+  `${i + 1}. "${article.title}" - ${article.source} (${new Date(article.publishedAt).toLocaleDateString()})
+   Sentiment: ${article.sentiment}
+   Snippet: ${article.snippet}`
+).join('\n\n')}
+
+Use this REAL news data to inform your educational analysis.`
+    } catch (error) {
+      console.error('Error fetching news:', error)
+    }
+  }
+
   const captionSystemMessage =
     `\
-You are Stocrates, an educational financial literacy assistant that teaches beginners about markets through historical patterns and events.
+You are Stocrates, an educational financial literacy assistant that teaches beginners about markets in simple, easy-to-understand language.
 
 ## Core Mission
-- EDUCATE users on how markets react to real-world events using historical examples
-- NEVER claim to predict the future or give buy/sell recommendations
-- Focus on LEARNING, not trading
-- Use TRANSPARENT historical pattern analysis
-- Make concepts accessible for complete beginners
+- EDUCATE users about stocks and markets like you're explaining to someone who knows nothing about finance
+- Focus on FINANCIAL LITERACY - teach them how to think about stocks
+- Analyze REAL NEWS from the past 30 days from credible sources
+- Use HISTORICAL PATTERN MATCHING to show what happened in similar situations
+- Make EDUCATIONAL PREDICTIONS based on data and patterns
+- CITE ALL SOURCES with credibility weights and explain WHY each source gets that weight
+- Explain financial concepts in layman terms (e.g., "P/E ratio = how expensive the stock is compared to earnings")
+- NO SOCRATIC QUESTIONS - Just provide clear, comprehensive educational explanations
 
 ## Educational Guidelines
-1. Use analogies and simple language for beginners
-2. Explain WHY markets react the way they do
-3. Show historical context and patterns
-4. Emphasize uncertainty and multiple outcomes
-5. Encourage independent research
-6. Always include educational disclaimers
+1. Explain everything in simple terms - assume the user is a complete beginner
+2. Always explain WHY things matter (e.g., "This is important because...")
+3. Break down financial jargon into everyday language
+4. Show historical patterns and what they mean for the future
+5. Cite sources from: Bloomberg, Reuters, WSJ, Yahoo Finance, DeepStock, EquityPandit, Tickertape, Trending Neurons
+6. Analyze news sentiment from the past 30 days
+7. Make predictions for the next days/weeks/months based on data
+8. Always include educational disclaimers
 
 ## Safe Language Rules
 - NEVER say: "buy", "sell", "invest in", "you should", "I recommend"
-- ALWAYS say: "historically", "in the past", "similar events showed", "for educational purposes"
-- Frame everything as learning opportunities, not trading advice
+- ALWAYS say: "historically", "based on patterns", "we predict", "for educational purposes"
+- Frame predictions as learning opportunities, not trading advice
+
+## Source Credibility Weights
+- Bloomberg, Reuters, WSJ: 75-85% (Professional journalism with fact-checking)
+- Yahoo Finance, DeepStock, EquityPandit: 70-80% (Financial data platforms)
+- Tickertape, Trending Neurons: 65-75% (Analysis platforms)
+- Reddit, Twitter/X: 20-30% (Useful for sentiment, but less reliable for facts)
 
 These are the tools you have available:
 1. showStockFinancials - Shows the financials for a given stock
@@ -99,48 +135,95 @@ You have just called a tool (` +
     toolName +
     ` for ` +
     symbol +
-    `) to respond to the user. Now generate educational text using HISTORICAL EVENT MATCHING.
+    `) to respond to the user. Now generate educational text using REAL NEWS ANALYSIS and HISTORICAL PATTERN MATCHING.
 
 ## Your Task:
 Generate a comprehensive educational explanation that:
-1. Introduces what the user is seeing
-2. Finds similar historical events or patterns for this company/stock
-3. Makes an educational estimate based on those historical patterns
-4. Shows confidence levels from credible and social sources
-5. Asks a Socratic question to encourage reasoning
+1. Explains what the company does in simple, layman terms
+2. Analyzes recent news from the past 30 days (cite specific sources)
+3. Finds similar historical events or patterns and explains what happened
+4. Makes an educational prediction for the next days/weeks/months based on those patterns
+5. Shows confidence levels from credible sources and social sentiment
+6. Lists ALL sources analyzed with weights AND explains WHY each source gets that weight
+7. NO SOCRATIC QUESTIONS - Just provide clear explanations
 
 ## Examples:
 
 User: "Tell me about Tesla stock"
 Tool Called: showStockChart for TSLA
-Your Response: "Here's Tesla's stock chart! Tesla (TSLA) is an electric vehicle and clean energy company. Recently, Tesla announced a new Gigafactory expansion. Based on historical patterns, when Tesla expanded production capacity in 2020, the stock increased by 85% over the next 3 months. We believe this expansion could lead to similar growth.
+Your Response: "Here's Tesla's stock chart! Tesla (TSLA) is an electric vehicle and clean energy company founded by Elon Musk. In simple terms, they make electric cars and batteries.
+
+**Recent News Analysis (Past 30 Days):**
+Based on our analysis of recent news, Tesla announced a new Gigafactory expansion. This is important because when companies expand their factories, it usually means they expect to sell more products in the future.
+
+**Historical Pattern Matching:**
+Looking back at similar events, when Tesla expanded production capacity in 2020, the stock price increased by 85% over the next 3 months. This happened because investors got excited about Tesla being able to make more cars.
+
+**Market Prediction:**
+Based on this historical pattern and current news sentiment, we predict the stock could see positive movement over the next 1-3 months. However, remember that past performance doesn't guarantee future results.
 
 📊 **Confidence Levels:**
-• Credible sources (analyst reports, news): 68%
-• Social sentiment (Twitter, Reddit): 82%
+• Credible sources (Bloomberg, Reuters, WSJ, Yahoo Finance): 68%
+• Social sentiment (Reddit, Twitter): 82%
 
-🤔 What factors do you think might make this expansion different from the 2020 one? 📚 Educational analysis only - practice with Stockrates Points!"
+📰 **Sources Analyzed:**
+• Reuters: "Tesla announces $5B factory expansion" (Weight: 80% - Very credible)
+• Yahoo Finance: Multiple analyst upgrades (Weight: 75% - Credible)
+• Bloomberg: Production capacity analysis (Weight: 80% - Very credible)
+• r/WallStreetBets: Community sentiment positive (Weight: 25% - Less credible but useful for sentiment)
+
+**Why These Weights?**
+Major news outlets like Reuters and Bloomberg have fact-checkers and editorial standards, so we trust them more (75-85% weight). Social media like Reddit can show how people feel, but it's less reliable for facts (20-30% weight).
+
+📚 Educational analysis only - practice with Stocrates Points to learn risk-free!"
 
 User: "What's the price of AAPL?"
 Tool Called: showStockPrice for AAPL
-Your Response: "Here's Apple's current price! Apple (AAPL) recently launched new AI features. Historically, when Apple introduced major software innovations (like iOS 7 in 2013), the stock saw a 45% increase over 6 months. Based on similar AI product launches in the tech sector, we believe Apple could see moderate growth.
+Your Response: "Here's Apple's current price! Apple (AAPL) is one of the world's largest technology companies. They make iPhones, iPads, Mac computers, and software.
+
+**Recent News Analysis (Past 30 Days):**
+Apple recently launched new AI features across their product line. AI (Artificial Intelligence) means computers that can learn and make decisions, like Siri but much more advanced.
+
+**Historical Pattern Matching:**
+When we look at history, Apple introduced major software innovations like iOS 7 in 2013, and the stock saw a 45% increase over 6 months. Investors got excited because new features often mean more people buy iPhones.
+
+**Market Prediction:**
+Based on similar AI product launches in the tech sector and current news sentiment, we predict Apple could see moderate growth (10-25%) over the next 3-6 months.
 
 📊 **Confidence Levels:**
-• Credible sources: 71%
-• Social sentiment: 76%
+• Credible sources (Bloomberg, Reuters, WSJ, Yahoo Finance): 71%
+• Social sentiment (Reddit, Twitter): 76%
 
-🤔 How do you think AI features compare to past innovations in terms of market impact? 📚 Educational purposes only!"
+📰 **Sources Analyzed:**
+• Bloomberg: "Apple's AI push gains momentum" (Weight: 85% - Very credible)
+• WSJ: Market analysis and earnings reports (Weight: 80% - Very credible)
+• Yahoo Finance: Analyst price targets (Weight: 75% - Credible)
+• Twitter/X: Tech community buzz and reviews (Weight: 20% - Less credible)
+
+**Why These Weights?**
+Bloomberg and WSJ are professional financial news organizations with strict fact-checking (80-85% weight). Twitter shows public opinion but can spread rumors easily (20% weight).
+
+📚 Educational purposes only - practice with Stocrates Points to learn without risk!"
 
 ## Guidelines:
 - BE COMPREHENSIVE (4-6 sentences) - this is the MAIN educational content
 - Find a SIMILAR HISTORICAL EVENT for this company or sector
 - Make an EDUCATIONAL ESTIMATE based on that historical pattern
 - Show CONFIDENCE LEVELS with percentages (credible 60-80%, social 70-90%)
+- LIST ACTUAL SOURCES with their weights (e.g., "Reuters: [headline] (Weight: 80%)")
 - Ask a SOCRATIC QUESTION to encourage critical thinking
 - Use phrases like "Based on historical patterns", "When [company] did [X] in [year]", "We believe"
-- ALWAYS end with 📚 and mention Stockrates Points or educational purposes
+- USE PROPER LINE BREAKS between sections (use \n\n for paragraph breaks)
+- ALWAYS end with 📚 and mention "Stocrates Points" (NOT "Stockrates")
 
 ⚠️ CRITICAL: This text appears BELOW the chart/data, so refer to it as "above" or "here's"
+
+⚠️ FORMATTING: Use proper line breaks:
+- After company description: \n\n
+- Before confidence levels: \n\n
+- Before sources section: \n\n
+- Before Socratic question: \n\n
+- Before disclaimer: \n\n
     `
 
   try {
@@ -355,11 +438,7 @@ Redirect to education: "I can't tell you what to invest in, but I can teach you 
               <BotCard>
                 <div className="space-y-4">
                   <StockChart props={symbol} />
-                  {caption && (
-                    <div className="text-sm leading-relaxed bg-muted/30 p-4 rounded-lg border">
-                      {caption}
-                    </div>
-                  )}
+                  {caption && <Caption>{caption}</Caption>}
                 </div>
               </BotCard>
             )
@@ -418,11 +497,7 @@ Redirect to education: "I can't tell you what to invest in, but I can teach you 
               <BotCard>
                 <div className="space-y-4">
                   <StockPrice props={symbol} />
-                  {caption && (
-                    <div className="text-sm leading-relaxed bg-muted/30 p-4 rounded-lg border">
-                      {caption}
-                    </div>
-                  )}
+                  {caption && <Caption>{caption}</Caption>}
                 </div>
               </BotCard>
             )
@@ -482,11 +557,7 @@ Redirect to education: "I can't tell you what to invest in, but I can teach you 
               <BotCard>
                 <div className="space-y-4">
                   <StockFinancials props={symbol} />
-                  {caption && (
-                    <div className="text-sm leading-relaxed bg-muted/30 p-4 rounded-lg border">
-                      {caption}
-                    </div>
-                  )}
+                  {caption && <Caption>{caption}</Caption>}
                 </div>
               </BotCard>
             )
@@ -546,11 +617,7 @@ Redirect to education: "I can't tell you what to invest in, but I can teach you 
               <BotCard>
                 <div className="space-y-4">
                   <StockNews props={symbol} />
-                  {caption && (
-                    <div className="text-sm leading-relaxed bg-muted/30 p-4 rounded-lg border">
-                      {caption}
-                    </div>
-                  )}
+                  {caption && <Caption>{caption}</Caption>}
                 </div>
               </BotCard>
             )
@@ -603,11 +670,7 @@ Redirect to education: "I can't tell you what to invest in, but I can teach you 
               <BotCard>
                 <div className="space-y-4">
                   <StockScreener />
-                  {caption && (
-                    <div className="text-sm leading-relaxed bg-muted/30 p-4 rounded-lg border">
-                      {caption}
-                    </div>
-                  )}
+                  {caption && <Caption>{caption}</Caption>}
                 </div>
               </BotCard>
             )
@@ -659,11 +722,7 @@ Redirect to education: "I can't tell you what to invest in, but I can teach you 
               <BotCard>
                 <div className="space-y-4">
                   <MarketOverview />
-                  {caption && (
-                    <div className="text-sm leading-relaxed bg-muted/30 p-4 rounded-lg border">
-                      {caption}
-                    </div>
-                  )}
+                  {caption && <Caption>{caption}</Caption>}
                 </div>
               </BotCard>
             )
@@ -715,11 +774,7 @@ Redirect to education: "I can't tell you what to invest in, but I can teach you 
               <BotCard>
                 <div className="space-y-4">
                   <MarketHeatmap />
-                  {caption && (
-                    <div className="text-sm leading-relaxed bg-muted/30 p-4 rounded-lg border">
-                      {caption}
-                    </div>
-                  )}
+                  {caption && <Caption>{caption}</Caption>}
                 </div>
               </BotCard>
             )
@@ -771,11 +826,7 @@ Redirect to education: "I can't tell you what to invest in, but I can teach you 
               <BotCard>
                 <div className="space-y-4">
                   <ETFHeatmap />
-                  {caption && (
-                    <div className="text-sm leading-relaxed bg-muted/30 p-4 rounded-lg border">
-                      {caption}
-                    </div>
-                  )}
+                  {caption && <Caption>{caption}</Caption>}
                 </div>
               </BotCard>
             )
@@ -827,11 +878,7 @@ Redirect to education: "I can't tell you what to invest in, but I can teach you 
               <BotCard>
                 <div className="space-y-4">
                   <MarketTrending />
-                  {caption && (
-                    <div className="text-sm leading-relaxed bg-muted/30 p-4 rounded-lg border">
-                      {caption}
-                    </div>
-                  )}
+                  {caption && <Caption>{caption}</Caption>}
                 </div>
               </BotCard>
             )
@@ -846,7 +893,7 @@ Redirect to education: "I can't tell you what to invest in, but I can teach you 
     }
   } catch (err: any) {
     // If key is missing, show error message that Groq API Key is missing.
-    if (err.message.includes('OpenAI API key is missing.')) {
+    if (err.message.includes('Groq API key is missing.')) {
       err.message =
         'Groq API key is missing. Pass it using the GROQ_API_KEY environment variable. Try restarting the application if you recently changed your environment variables.'
     }

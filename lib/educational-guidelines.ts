@@ -83,13 +83,22 @@ export const ENCOURAGED_PHRASES = [
 export const RESPONSE_TEMPLATES = {
   investment_question: `Let me analyze historical events similar to {company}'s current situation. Based on past patterns, I'll show you what happened and give you confidence levels from different sources.`,
 
-  should_i_buy: `Great question! Let me find similar events in {company}'s history or {sector}. Recently, {company} {recent_event}. According to past research, a similar {event_type} in {year} resulted in {outcome}. We believe within the next {timeframe}, the market/event will {prediction}.
+  should_i_buy: `Great question! Let me find similar events in {company}'s history or {sector}.
+
+Recently, {company} {recent_event}. According to past research, a similar {event_type} in {year} resulted in {outcome}. We believe within the next {timeframe}, the market/event will {prediction}.
 
 📊 Confidence Levels:
 • Credible sources: {credible_percent}%
 • Social sentiment: {social_percent}%
 
-What do you think about this pattern? Does it make sense to you?`,
+📰 Sources Used:
+• {source_1}: {headline_1} (Weight: {weight_1}%)
+• {source_2}: {headline_2} (Weight: {weight_2}%)
+• {source_3}: {headline_3} (Weight: {weight_3}%)
+
+🤔 What do you think about this pattern? Does it make sense to you?
+
+📚 Educational analysis only - practice with Stocrates Points!`,
 
   prediction_with_evidence: `Based on historical event matching:
 
