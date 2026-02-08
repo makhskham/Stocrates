@@ -14,6 +14,7 @@ type EventItem = {
   direction: 'up' | 'down';
   pattern: string;
   expectedDirection?: 'up' | 'down';
+  eventType?: string;
 };
 
 function mean(values: number[]) {
@@ -26,21 +27,32 @@ export async function GET(request: NextRequest) {
   const raw = fs.readFileSync(eventsPath, 'utf8');
   const allEvents: EventItem[] = JSON.parse(raw);
 
-  // Get pattern from query parameters
+  // Get filter parameters
   const searchParams = request.nextUrl.searchParams;
   const pattern = searchParams.get('pattern');
+  const eventType = searchParams.get('eventType');
 
-  // Filter events by pattern if provided
-  const events = pattern
-    ? allEvents.filter(e => e.pattern === pattern)
-    : allEvents;
+  // Filter events by pattern and/or event type
+  let events = allEvents;
+
+  if (pattern) {
+    events = events.filter(e => e.pattern === pattern);
+  }
+
+  if (eventType) {
+    events = events.filter(e => e.eventType === eventType);
+  }
 
   const count = events.length;
 
-  // Return error if no events found for the pattern
-  if (count === 0 && pattern) {
+  // Return error if no events found
+  if (count === 0 && (pattern || eventType)) {
+    const filters = [];
+    if (pattern) filters.push(`pattern: ${pattern}`);
+    if (eventType) filters.push(`event type: ${eventType}`);
+
     return NextResponse.json({
-      error: `No events found for pattern: ${pattern}`,
+      error: `No events found for ${filters.join(' and ')}`,
       count: 0
     }, { status: 404 });
   }

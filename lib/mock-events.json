@@ -9,7 +9,8 @@
     "movePercent": 5,
     "direction": "up",
     "pattern": "breakout",
-    "expectedDirection": "up"
+    "expectedDirection": "up",
+    "eventType": "earnings"
   },
   {
     "id": "evt-002",
@@ -21,7 +22,8 @@
     "movePercent": -1.6667,
     "direction": "down",
     "pattern": "retest",
-    "expectedDirection": "up"
+    "expectedDirection": "up",
+    "eventType": "product_launch"
   },
   {
     "id": "evt-003",
@@ -33,7 +35,8 @@
     "movePercent": 10,
     "direction": "up",
     "pattern": "continuation",
-    "expectedDirection": "up"
+    "expectedDirection": "up",
+    "eventType": "contract"
   },
   {
     "id": "evt-004",
@@ -45,7 +48,8 @@
     "movePercent": -5,
     "direction": "down",
     "pattern": "head_and_shoulders",
-    "expectedDirection": "down"
+    "expectedDirection": "down",
+    "eventType": "lawsuit"
   },
   {
     "id": "evt-005",
@@ -57,7 +61,8 @@
     "movePercent": 4,
     "direction": "up",
     "pattern": "breakout",
-    "expectedDirection": "up"
+    "expectedDirection": "up",
+    "eventType": "fda_approval"
   },
   {
     "id": "evt-006",
@@ -69,7 +74,8 @@
     "movePercent": -5,
     "direction": "down",
     "pattern": "fakeout",
-    "expectedDirection": "up"
+    "expectedDirection": "up",
+    "eventType": "executive_change"
   },
   {
     "id": "evt-007",
@@ -81,7 +87,8 @@
     "movePercent": 5,
     "direction": "up",
     "pattern": "continuation",
-    "expectedDirection": "up"
+    "expectedDirection": "up",
+    "eventType": "merger"
   },
   {
     "id": "evt-008",
@@ -93,7 +100,8 @@
     "movePercent": -4.4444,
     "direction": "down",
     "pattern": "retest",
-    "expectedDirection": "down"
+    "expectedDirection": "down",
+    "eventType": "economic_data"
   },
   {
     "id": "evt-009",
@@ -105,7 +113,8 @@
     "movePercent": 4.6667,
     "direction": "up",
     "pattern": "breakout",
-    "expectedDirection": "up"
+    "expectedDirection": "up",
+    "eventType": "earnings"
   },
   {
     "id": "evt-010",
@@ -117,7 +126,8 @@
     "movePercent": -5,
     "direction": "down",
     "pattern": "head_and_shoulders",
-    "expectedDirection": "down"
+    "expectedDirection": "down",
+    "eventType": "war"
   },
   {
     "id": "evt-011",

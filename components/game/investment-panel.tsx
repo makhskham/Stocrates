@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import { useGame } from '@/lib/game/game-context'
 import { AVAILABLE_STOCKS } from '@/lib/game/types'
 import { Button } from '@/components/ui/button'
@@ -13,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { TrendingUp, AlertCircle, Lightbulb } from 'lucide-react'
+import { TrendingUp, AlertCircle, Lightbulb, Clock } from 'lucide-react'
 import { generateInvestmentFeedback } from '@/lib/game/investment-feedback'
 
 export function InvestmentPanel() {
@@ -21,6 +21,9 @@ export function InvestmentPanel() {
   const [selectedStock, setSelectedStock] = useState<string>('')
   const [amount, setAmount] = useState<string>('')
   const [error, setError] = useState<string>('')
+  const [currentPrice, setCurrentPrice] = useState<number>(0)
+  const [loadingPrice, setLoadingPrice] = useState<boolean>(false)
+  const [priceSource, setPriceSource] = useState<'historical' | 'mock'>('mock')
 
   // Validate amount as user types
   const handleAmountChange = (value: string) => {
@@ -34,8 +37,55 @@ export function InvestmentPanel() {
     }
   }
 
-  // Mock price - in real implementation, fetch from API based on selectedDate
-  const getCurrentPrice = (symbol: string): number => {
+  // Fetch price based on whether we're time traveling
+  useEffect(() => {
+    if (!selectedStock) {
+      setCurrentPrice(0)
+      return
+    }
+
+    const fetchPrice = async () => {
+      setLoadingPrice(true)
+
+      // Check if we're time traveling (date is in the past)
+      const isTimeTraveling = gameState.isTimeTraveling && gameState.selectedDate < new Date()
+
+      if (isTimeTraveling) {
+        try {
+          // Fetch historical price from API
+          const dateStr = gameState.selectedDate.toISOString().split('T')[0]
+          const response = await fetch(`/api/historical-price?symbol=${selectedStock}&date=${dateStr}`)
+          const data = await response.json()
+
+          if (response.ok && data.price) {
+            setCurrentPrice(data.price)
+            setPriceSource('historical')
+            console.log(`📅 Using historical price for ${selectedStock} on ${dateStr}: $${data.price}`)
+          } else {
+            // Fallback to mock price
+            setCurrentPrice(getMockPrice(selectedStock))
+            setPriceSource('mock')
+            console.warn(`⚠️ No historical data, using mock price for ${selectedStock}`)
+          }
+        } catch (error) {
+          console.error('Error fetching historical price:', error)
+          setCurrentPrice(getMockPrice(selectedStock))
+          setPriceSource('mock')
+        }
+      } else {
+        // Use mock prices for current/future dates
+        setCurrentPrice(getMockPrice(selectedStock))
+        setPriceSource('mock')
+      }
+
+      setLoadingPrice(false)
+    }
+
+    fetchPrice()
+  }, [selectedStock, gameState.selectedDate, gameState.isTimeTraveling])
+
+  // Mock price data (fallback)
+  const getMockPrice = (symbol: string): number => {
     const mockPrices: Record<string, number> = {
       AAPL: 178.50,
       TSLA: 242.80,
@@ -68,8 +118,12 @@ export function InvestmentPanel() {
       return
     }
 
-    const price = getCurrentPrice(selectedStock)
-    const shares = investAmount / price
+    if (currentPrice <= 0) {
+      setError('Price data not available. Please try again.')
+      return
+    }
+
+    const shares = investAmount / currentPrice
     const stockInfo = AVAILABLE_STOCKS.find(s => s.symbol === selectedStock)
 
     addInvestment({
@@ -77,9 +131,9 @@ export function InvestmentPanel() {
       companyName: stockInfo?.name || selectedStock,
       amount: investAmount,
       shares: shares,
-      purchasePrice: price,
+      purchasePrice: currentPrice,
       purchaseDate: gameState.selectedDate,
-      currentPrice: price
+      currentPrice: currentPrice
     })
 
     // Reset form
@@ -88,8 +142,7 @@ export function InvestmentPanel() {
   }
 
   const selectedStockInfo = AVAILABLE_STOCKS.find(s => s.symbol === selectedStock)
-  const currentPrice = selectedStock ? getCurrentPrice(selectedStock) : 0
-  const estimatedShares = amount && selectedStock ? parseFloat(amount) / currentPrice : 0
+  const estimatedShares = amount && selectedStock && currentPrice > 0 ? parseFloat(amount) / currentPrice : 0
 
   // Generate preview feedback
   const previewFeedback = useMemo(() => {
@@ -144,11 +197,28 @@ export function InvestmentPanel() {
         </div>
 
         {selectedStock && (
-          <div className="bg-muted/50 rounded p-3 text-sm">
-            <div className="flex justify-between">
+          <div className="bg-muted/50 rounded p-3 text-sm space-y-2">
+            <div className="flex justify-between items-center">
               <span className="text-muted-foreground">Current Price:</span>
-              <span className="font-semibold">${currentPrice.toFixed(2)}</span>
+              <div className="flex items-center gap-2">
+                {loadingPrice ? (
+                  <span className="text-xs text-muted-foreground">Loading...</span>
+                ) : (
+                  <>
+                    <span className="font-semibold">${currentPrice.toFixed(2)}</span>
+                    {priceSource === 'historical' && (
+                      <Clock className="h-3 w-3 text-blue-600" title="Historical Price" />
+                    )}
+                  </>
+                )}
+              </div>
             </div>
+            {priceSource === 'historical' && !loadingPrice && (
+              <div className="text-xs text-blue-600 flex items-center gap-1">
+                <Clock className="h-3 w-3" />
+                <span>Using real historical price data</span>
+              </div>
+            )}
           </div>
         )}
 

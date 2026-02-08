@@ -32,12 +32,17 @@ export function EventAnalysisPage() {
   const [analysisData, setAnalysisData] = useState<AnalysisData | null>(null)
   const [error, setError] = useState<string | null>(null)
 
-  const handleAnalyze = async (pattern: string) => {
+  const handleAnalyze = async (pattern: string, eventType?: string) => {
     setIsLoading(true)
     setError(null)
 
     try {
-      const response = await fetch(`/api/analyze-event?pattern=${encodeURIComponent(pattern)}`)
+      // Build query parameters
+      const params = new URLSearchParams()
+      if (pattern) params.append('pattern', pattern)
+      if (eventType) params.append('eventType', eventType)
+
+      const response = await fetch(`/api/analyze-event?${params.toString()}`)
 
       if (!response.ok) {
         throw new Error(`Failed to fetch data: ${response.statusText}`)
@@ -45,7 +50,14 @@ export function EventAnalysisPage() {
 
       const data = await response.json()
       setAnalysisData(data)
-      toast.success(`✅ Analysis complete for ${pattern} pattern! Review the results below.`)
+
+      // Build success message
+      const filters = []
+      if (pattern) filters.push(`${pattern} pattern`)
+      if (eventType) filters.push(`${eventType} events`)
+      const filterText = filters.join(' + ')
+
+      toast.success(`✅ Analysis complete for ${filterText}! Review the results below.`)
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred'
       setError(errorMessage)
