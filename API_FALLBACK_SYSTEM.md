@@ -192,7 +192,7 @@ newsAPIManager.reset()
 ⚠️  No real news found from any API, using mock data
 ```
 
-## ⚙️ Configuration
+## Configuration
 
 ### Cooldown Period
 Default: 1 hour (3600000 ms)
@@ -212,7 +212,7 @@ To change:
 private readonly MIN_REQUEST_INTERVAL = 1000 // 1 second
 ```
 
-## 🎓 Best Practices
+## Best Practices
 
 ### 1. Monitor API Usage
 ```typescript
