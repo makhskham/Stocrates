@@ -1,10 +1,10 @@
-# 🔄 API Fallback System - Rate Limit Protection
+# API Fallback System - Rate Limit Protection
 
-## 🎯 Overview
+## Overview
 
 Stocrates now has an **intelligent API fallback system** that automatically switches between multiple news APIs when rate limits are hit. This ensures uninterrupted service even when one API reaches its limit.
 
-## 📊 Supported APIs
+## Supported APIs
 
 ### 1. **NewsAPI.org** (Primary)
 - **API Key**: Set in `.env.local` as `NEWS_API_KEY`
@@ -23,7 +23,7 @@ Stocrates now has an **intelligent API fallback system** that automatically swit
 - **Rate Limit**: ~60 requests/minute
 - **Credibility Weight**: 20-30%
 
-## 🔧 How It Works
+## How It Works
 
 ### Automatic Fallback Flow
 
@@ -41,7 +41,7 @@ User asks about NVIDIA
     └─ Error? → Try next API ⏭️
     ↓
 3. All APIs failed?
-    └─ Use mock data as fallback 📦
+    └─ Use mock data as fallback 
 ```
 
 ### Rate Limit Detection
@@ -52,10 +52,10 @@ The system automatically detects rate limits:
 - **Empty responses** from APIs
 
 When detected:
-1. ⏸️  Mark API as unavailable
-2. ⏰ Set cooldown period (1 hour)
-3. ⏭️  Switch to next available API
-4. ✅ Auto-reset after cooldown
+1. Mark API as unavailable
+2. Set cooldown period (1 hour)
+3. Switch to next available API
+4. Auto-reset after cooldown
 
 ### Request Throttling
 
@@ -64,7 +64,7 @@ Built-in throttling prevents hitting rate limits:
 - **Automatic waiting** if requests are too frequent
 - **Request counting** to track usage
 
-## 📁 File Structure
+## File Structure
 
 ### `lib/news/api-manager.ts`
 The core fallback system that manages all APIs:
@@ -118,7 +118,7 @@ async function fetchFromMultipleSources(symbol, daysBack) {
 }
 ```
 
-## 🚀 Usage Examples
+## Usage Examples
 
 ### Basic Usage (Automatic)
 ```typescript
@@ -163,7 +163,7 @@ import { newsAPIManager } from '@/lib/news/api-manager'
 newsAPIManager.reset()
 ```
 
-## 📊 Console Output Examples
+## Console Output Examples
 
 ### Successful Request
 ```
@@ -192,7 +192,7 @@ newsAPIManager.reset()
 ⚠️  No real news found from any API, using mock data
 ```
 
-## ⚙️ Configuration
+## Configuration
 
 ### Cooldown Period
 Default: 1 hour (3600000 ms)
@@ -212,7 +212,7 @@ To change:
 private readonly MIN_REQUEST_INTERVAL = 1000 // 1 second
 ```
 
-## 🎓 Best Practices
+## Best Practices
 
 ### 1. Monitor API Usage
 ```typescript
@@ -238,7 +238,7 @@ if (cached) return cached
 - **NewsAPI**: $449/month for unlimited requests
 - **Finnhub**: $59/month for 300 calls/min
 
-## 🧪 Testing
+## Testing
 
 ### Test the Fallback System
 ```bash
@@ -262,16 +262,16 @@ const result = await fetchStockNews('NVDA', 30)
 console.log(result.articles[0].source) // Should be 'Finnhub'
 ```
 
-## 📈 Rate Limit Tracking
+## Rate Limit Tracking
 
 The system tracks:
-- ✅ **Request count** per API
-- ⏰ **Last request time**
-- 🚫 **Rate limit status**
-- ⏳ **Reset time**
-- ❌ **Last error message**
+- **Request count** per API
+- **Last request time**
+- **Rate limit status**
+- **Reset time**
+- **Last error message**
 
-## 🔮 Future Enhancements
+## Future Enhancements
 
 1. **Add more APIs**:
    - Alpha Vantage
@@ -294,7 +294,7 @@ The system tracks:
    - Optimize API selection
    - Cost analysis
 
-## ✅ Summary
+## Summary
 
 Your Stocrates app now has:
 - ✅ **3 news sources**: NewsAPI, Finnhub, Reddit
@@ -304,5 +304,5 @@ Your Stocrates app now has:
 - ✅ **Detailed logging**: See what's happening
 - ✅ **Mock data fallback**: Never fails completely
 
-**Result**: Uninterrupted news service even with free API tiers! 🚀
+**Result**: Uninterrupted news service even with free API tiers! 
 
