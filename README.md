@@ -29,9 +29,9 @@ An educational AI-powered financial literacy platform that teaches beginners how
 ![Homepage](imgs/homepage.png)
 *The main interface featuring AI chat, live market data, and educational resources*
 
-### Portfolio View
-![Portfolio](imgs/portfolio.png)
-*Track your investments and see real-time performance with detailed analytics*
+### Investment Game
+![Investment Game](imgs/portfolio.png)
+*Time-travel to the past and practice investing with risk-free Stocrates Points*
 
 ### Transparency & Confidence Levels
 ![Transparency Dashboard](imgs/transparency.png)
@@ -41,9 +41,9 @@ An educational AI-powered financial literacy platform that teaches beginners how
 ![Event Impact](imgs/eventimpact.png)
 *Analyze how historical events affected stock prices with pattern matching*
 
-### Investment Game
-![Investment Game](imgs/investmentgame.png)
-*Time-travel to the past and practice investing with risk-free Stocrates Points*
+### Portfolio View
+![Portfolio](imgs/investmentgame.png)
+*Track your investments and see real-time performance with detailed analytics*
 
 ---
 
