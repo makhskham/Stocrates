@@ -35,9 +35,9 @@ export const metadata = {
     description: 'Educational AI financial literacy using the Socratic Method.',
   },
   icons: {
-    icon: '/logo.jpg',
-    shortcut: '/logo.jpg',
-    apple: '/logo.jpg'
+    icon: '/logo.png',
+    shortcut: '/logo.png',
+    apple: '/logo.png'
   }
 }
 

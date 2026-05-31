@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import * as React from 'react'
 import Image from 'next/image'
@@ -12,7 +12,7 @@ export function LogoBadge() {
     >
       <div className="w-12 h-12 rounded-full overflow-hidden border-3 border-stocrates-dark shadow-lg hover:scale-110 transition-transform bg-white flex items-center justify-center">
         <Image
-          src="/logo.jpg"
+          src="/logo.png"
           alt="Stocrates Logo"
           width={48}
           height={48}
@@ -23,4 +23,5 @@ export function LogoBadge() {
     </Link>
   )
 }
+
 

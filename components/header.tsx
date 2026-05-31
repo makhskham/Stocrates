@@ -18,7 +18,7 @@ function Navigation() {
       <Link href="/new" className="flex items-center gap-3 group">
         <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-stocrates-dark/80 shadow-sm group-hover:shadow-md group-hover:scale-105 transition-all duration-200 bg-white flex items-center justify-center">
           <Image
-            src="/logo.jpg"
+            src="/logo.png"
             alt="Stocrates Logo"
             width={40}
             height={40}

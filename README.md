@@ -1,6 +1,6 @@
 # Stocrates
 
-![Stocrates Logo](logo.jpg)
+![Stocrates Logo](logo.png)
 
 > *Stock + Socrates* — Proven Past, Prepared Future
 
