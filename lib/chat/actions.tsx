@@ -8,7 +8,7 @@ import {
   createStreamableValue
 } from 'ai/rsc'
 import { createGroq } from '@ai-sdk/groq'
-import { HALAL_SYSTEM_PROMPT } from '@/lib/modes/halal'
+import { HALAL_SYSTEM_PROMPT, HALAL_CAPTION_ADDITION } from '@/lib/modes/halal'
 
 import { BotCard, BotMessage } from '@/components/stocks/message'
 import { Caption } from '@/components/stocks/caption'
@@ -102,7 +102,8 @@ const MAX_HISTORY_MESSAGES = 6
 async function generateCaption(
   symbol: string,
   toolName: string,
-  aiState: MutableAIState
+  aiState: MutableAIState,
+  mode?: string
 ): Promise<string> {
   const groq = createGroq({ apiKey: GROQ_API_KEY_ENV })
 
@@ -384,7 +385,8 @@ Redirect to education: "I can't tell you what to invest in, but I can teach you 
             const caption = await generateCaption(
               symbol,
               'showStockChart',
-              aiState
+              aiState,
+              mode
             )
 
             return (
@@ -443,7 +445,8 @@ Redirect to education: "I can't tell you what to invest in, but I can teach you 
             const caption = await generateCaption(
               symbol,
               'showStockPrice',
-              aiState
+              aiState,
+              mode
             )
 
             return (
@@ -503,7 +506,8 @@ Redirect to education: "I can't tell you what to invest in, but I can teach you 
             const caption = await generateCaption(
               symbol,
               'StockFinancials',
-              aiState
+              aiState,
+              mode
             )
 
             return (
@@ -563,7 +567,8 @@ Redirect to education: "I can't tell you what to invest in, but I can teach you 
             const caption = await generateCaption(
               symbol,
               'showStockNews',
-              aiState
+              aiState,
+              mode
             )
 
             return (
