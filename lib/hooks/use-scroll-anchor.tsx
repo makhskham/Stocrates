@@ -17,6 +17,7 @@ export const useScrollAnchor = () => {
     }
   }, [])
 
+  // Scroll when isAtBottom/isVisible state changes (initial load, new messages)
   useEffect(() => {
     if (messagesRef.current) {
       if (isAtBottom && !isVisible) {
@@ -27,6 +28,7 @@ export const useScrollAnchor = () => {
     }
   }, [isAtBottom, isVisible])
 
+  // Track whether user has scrolled away from the bottom
   useEffect(() => {
     const { current } = scrollRef
 
@@ -34,44 +36,60 @@ export const useScrollAnchor = () => {
       const handleScroll = (event: Event) => {
         const target = event.target as HTMLDivElement
         const offset = 25
-        const isAtBottom =
+        const atBottom =
           target.scrollTop + target.clientHeight >= target.scrollHeight - offset
-
-        setIsAtBottom(isAtBottom)
+        setIsAtBottom(atBottom)
       }
 
-      current.addEventListener('scroll', handleScroll, {
-        passive: true
-      })
-
-      return () => {
-        current.removeEventListener('scroll', handleScroll)
-      }
+      current.addEventListener('scroll', handleScroll, { passive: true })
+      return () => current.removeEventListener('scroll', handleScroll)
     }
   }, [])
 
+  // MutationObserver: auto-scroll during streaming whenever the message
+  // container grows (text content changes, new nodes added) and the user
+  // is at or near the bottom.
+  useEffect(() => {
+    const scrollEl = scrollRef.current
+    const messagesEl = messagesRef.current
+
+    if (!scrollEl || !messagesEl) return
+
+    const observer = new MutationObserver(() => {
+      const offset = 150
+      const atBottom =
+        scrollEl.scrollTop + scrollEl.clientHeight >=
+        scrollEl.scrollHeight - offset
+
+      if (atBottom) {
+        // Instant scroll (no smooth) so it keeps up with rapid streaming
+        scrollEl.scrollTop = scrollEl.scrollHeight
+      }
+    })
+
+    observer.observe(messagesEl, {
+      childList: true,
+      subtree: true,
+      characterData: true,
+    })
+
+    return () => observer.disconnect()
+  }, [])
+
+  // IntersectionObserver: track visibility of the bottom anchor div
   useEffect(() => {
     if (visibilityRef.current) {
-      let observer = new IntersectionObserver(
+      const observer = new IntersectionObserver(
         entries => {
           entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              setIsVisible(true)
-            } else {
-              setIsVisible(false)
-            }
+            setIsVisible(entry.isIntersecting)
           })
         },
-        {
-          rootMargin: '0px 0px -150px 0px'
-        }
+        { rootMargin: '0px 0px -150px 0px' }
       )
 
       observer.observe(visibilityRef.current)
-
-      return () => {
-        observer.disconnect()
-      }
+      return () => observer.disconnect()
     }
   })
 
