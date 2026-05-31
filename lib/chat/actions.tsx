@@ -284,7 +284,7 @@ Bloomberg and WSJ are professional financial news organizations with strict fact
 
   try {
     const response = await generateText({
-      model: openai(MODEL),  // Change to groq(MODEL) if using Groq
+      model: groq(MODEL),
       messages: [
         {
           role: 'system',

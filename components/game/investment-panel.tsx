@@ -207,7 +207,7 @@ export function InvestmentPanel() {
                   <>
                     <span className="font-semibold">${currentPrice.toFixed(2)}</span>
                     {priceSource === 'historical' && (
-                      <Clock className="h-3 w-3 text-blue-600" title="Historical Price" />
+                      <Clock className="h-3 w-3 text-blue-600" aria-label="Historical Price" />
                     )}
                   </>
                 )}

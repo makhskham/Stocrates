@@ -70,8 +70,9 @@ FACTOR_3: [one technical factor]
 
 Remember: This is a learning game, not real financial advice. Be creative but educational.`
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result = await generateText({
-      model: groq('llama-3.3-70b-versatile'),
+      model: groq('llama-3.3-70b-versatile') as any,
       prompt,
       maxTokens: 300
     })
