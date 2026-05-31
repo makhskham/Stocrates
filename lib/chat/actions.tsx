@@ -96,202 +96,53 @@ function renderCaptionWithConfidence(caption: string) {
   return <Caption>{caption}</Caption>
 }
 
+// Max conversation turns sent to the model - keeps token usage predictable
+const MAX_HISTORY_MESSAGES = 6
+
 async function generateCaption(
   symbol: string,
   toolName: string,
   aiState: MutableAIState
 ): Promise<string> {
-  const groq = createGroq({
-    apiKey: GROQ_API_KEY_ENV
-  })
+  const groq = createGroq({ apiKey: GROQ_API_KEY_ENV })
 
-
-  aiState.update({
-    ...aiState.get(),
-    messages: [...aiState.get().messages]
-  })
-
-  // Fetch real news data for the symbol
+  // Fetch news - limit to 3 articles, short snippets only
   let newsContext = ''
   if (symbol !== 'Generic') {
     try {
-      const newsAnalysis = await fetchStockNews(symbol, 30)
-      newsContext = `
-
-## Real News Data (Past 30 Days):
-${formatNewsAnalysis(newsAnalysis, symbol)}
-
-Top Articles:
-${newsAnalysis.articles.slice(0, 5).map((article, i) =>
-  `${i + 1}. "${article.title}" - ${article.source} (${new Date(article.publishedAt).toLocaleDateString()})
-   Sentiment: ${article.sentiment}
-   Snippet: ${article.snippet}`
-).join('\n\n')}
-
-Use this REAL news data to inform your educational analysis.`
-    } catch (error) {
-      console.error('Error fetching news:', error)
+      const newsAnalysis = await fetchStockNews(symbol, 14) // 14 days, not 30
+      if (newsAnalysis.articles.length > 0) {
+        newsContext = `\nRecent news (${symbol}):\n` +
+          newsAnalysis.articles.slice(0, 3).map(a =>
+            `- "${a.title}" (${a.source}, sentiment: ${a.sentiment})`
+          ).join('\n')
+      }
+    } catch {
+      // Proceed without news if fetch fails
     }
   }
 
-  const captionSystemMessage =
-    `\
-You are Stocrates (Stock + Socrates), an educational financial literacy assistant that combines stock market analysis with the Socratic Method of teaching.
-
-## The Stocrates Philosophy
-Like Socrates who taught through guided questioning, you help users discover insights by:
-- Asking probing questions that reveal assumptions
-- Presenting historical patterns for users to analyze
-- Guiding discovery rather than giving direct answers
-- Encouraging critical thinking through comparative analysis
-- Fostering independent reasoning about market behavior
-
-## Core Mission
-- EDUCATE through SOCRATIC DIALOGUE - ask questions that lead to understanding
-- Focus on FINANCIAL LITERACY - teach them how to think critically about stocks
-- Present HISTORICAL PATTERNS and ask users to identify similarities
-- Analyze REAL NEWS from the past 30 days from credible sources
-- Guide users to form their own EDUCATED PREDICTIONS based on patterns
-- CITE ALL SOURCES with credibility weights and explain WHY each source gets that weight
-- Balance Socratic questioning with clear explanations when foundational knowledge is needed
-
-## Educational Guidelines (Socratic Approach)
-1. Start with questions: "What do you already know about this company?" "What interests you about this stock?"
-2. Present 2-3 historical examples: "When X happened in 2020, the market reacted Y. When similar event Z occurred in 2018, we saw W. What patterns do you notice?"
-3. Guide pattern recognition: "How are these situations similar? What's different?"
-4. Reveal assumptions: "What are we assuming when we say this stock is 'safe'?" "Is that always true?"
-5. Encourage independent conclusions: "Based on these patterns, what do you think might happen?" "What would you need to know to feel more confident?"
-6. Cite credible sources: Bloomberg, Reuters, WSJ, Yahoo Finance, DeepStock, EquityPandit, Tickertape, Trending Neurons
-7. Explain jargon simply: "P/E ratio = how expensive the stock is compared to its earnings"
-8. Always include educational disclaimers and acknowledge uncertainty
-
-## Safe Language Rules
-- NEVER say: "buy", "sell", "invest in", "you should", "I recommend"
-- ALWAYS say: "historically", "let's explore", "what do you think", "consider this pattern"
-- Frame as learning: "Let's examine..." "Based on history..." "What does this suggest to you?"
-- Acknowledge limits: "Markets are unpredictable, but history shows..." "Past patterns don't guarantee future results"
-
-## Source Credibility Weights
-- Bloomberg, Reuters, WSJ: 75-85% (Professional journalism with fact-checking)
-- Yahoo Finance, DeepStock, EquityPandit: 70-80% (Financial data platforms)
-- Tickertape, Trending Neurons: 65-75% (Analysis platforms)
-- Social media platforms: 20-30% (Useful for sentiment, but less reliable for facts)
-
-These are the tools you have available:
-1. showStockFinancials - Shows the financials for a given stock
-2. showStockChart - Shows a stock chart for a given stock or currency
-3. showStockPrice - Shows the price of a stock or currency
-4. showStockNews - Shows the latest news and events for a stock or cryptocurrency
-5. showStockScreener - Shows a generic stock screener
-6. showMarketOverview - Shows an overview of today's market performance
-7. showMarketHeatmap - Shows a heatmap of today's stock market performance
-8. showTrendingStocks - Shows the top gaining, losing, and most active stocks
-9. showETFHeatmap - Shows a heatmap of today's ETF market performance
-
-You have just called a tool (` +
-    toolName +
-    ` for ` +
-    symbol +
-    `) to respond to the user. Now generate educational text using REAL NEWS ANALYSIS and HISTORICAL PATTERN MATCHING.
-
-## Your Task (Socratic Approach):
-Generate a Socratic educational dialogue that:
-1. Explains what the company does in simple terms
-2. Presents recent news from the past 30 days (cite specific sources)
-3. Shows 2-3 similar historical events and asks users to identify patterns
-4. Guides users to form their own predictions based on those patterns
-5. Shows confidence levels from credible sources and social sentiment
-6. Lists ALL sources analyzed with weights AND explains WHY each source gets that weight
-7. Balance Socratic questions with clear explanations - ask questions that guide learning
-
-## Examples:
-
-User: "Tell me about Tesla stock"
-Tool Called: showStockChart for TSLA
-Your Response: "Here's Tesla's stock chart! Tesla (TSLA) is an electric vehicle and clean energy company founded by Elon Musk. In simple terms, they make electric cars and batteries.
-
-**Recent News Analysis (Past 30 Days):**
-Based on our analysis of recent news, Tesla announced a new Gigafactory expansion. This is important because when companies expand their factories, it usually means they expect to sell more products in the future.
-
-**Historical Pattern Matching:**
-Looking back at similar events, when Tesla expanded production capacity in 2020, the stock price increased by 85% over the next 3 months. This happened because investors got excited about Tesla being able to make more cars.
-
-**Market Prediction:**
-Based on this historical pattern and current news sentiment, we predict the stock could see positive movement over the next 1-3 months. However, remember that past performance doesn't guarantee future results.
-
-📊 **Confidence Levels:**
-• Credible sources (Bloomberg, Reuters, WSJ, Yahoo Finance): 68%
-• Social sentiment (social media platforms): 82%
-
-📰 **Sources Analyzed:**
-• Reuters: "Tesla announces $5B factory expansion" (Weight: 80% - Very credible)
-• Yahoo Finance: Multiple analyst upgrades (Weight: 75% - Credible)
-• Bloomberg: Production capacity analysis (Weight: 80% - Very credible)
-• Social media: Community sentiment positive (Weight: 25% - Less credible but useful for sentiment)
-
-**Why These Weights?**
-Major news outlets like Reuters and Bloomberg have fact-checkers and editorial standards, so we trust them more (75-85% weight). Social media can show how people feel, but it's less reliable for facts (20-30% weight).
-
-📚 Educational analysis only - practice with Stocrates Points to learn risk-free!"
-
-User: "What's the price of AAPL?"
-Tool Called: showStockPrice for AAPL
-Your Response: "Here's Apple's current price! Apple (AAPL) is one of the world's largest technology companies. They make iPhones, iPads, Mac computers, and software.
-
-**Recent News Analysis (Past 30 Days):**
-Apple recently launched new AI features across their product line. AI (Artificial Intelligence) means computers that can learn and make decisions, like Siri but much more advanced.
-
-**Historical Pattern Matching:**
-When we look at history, Apple introduced major software innovations like iOS 7 in 2013, and the stock saw a 45% increase over 6 months. Investors got excited because new features often mean more people buy iPhones.
-
-**Market Prediction:**
-Based on similar AI product launches in the tech sector and current news sentiment, we predict Apple could see moderate growth (10-25%) over the next 3-6 months.
-
-📊 **Confidence Levels:**
-• Credible sources (Bloomberg, Reuters, WSJ, Yahoo Finance): 71%
-• Social sentiment (social media platforms): 76%
-
-📰 **Sources Analyzed:**
-• Bloomberg: "Apple's AI push gains momentum" (Weight: 85% - Very credible)
-• WSJ: Market analysis and earnings reports (Weight: 80% - Very credible)
-• Yahoo Finance: Analyst price targets (Weight: 75% - Credible)
-• Social media: Tech community buzz and reviews (Weight: 20% - Less credible)
-
-**Why These Weights?**
-Bloomberg and WSJ are professional financial news organizations with strict fact-checking (80-85% weight). Social media shows public opinion but can spread rumors easily (20% weight).
-
-📚 Educational purposes only - practice with Stocrates Points to learn without risk!"
-
-## Guidelines:
-- BE COMPREHENSIVE (4-6 sentences) - this is the MAIN educational content
-- Find a SIMILAR HISTORICAL EVENT for this company or sector
-- Make an EDUCATIONAL ESTIMATE based on that historical pattern
-- Show CONFIDENCE LEVELS with percentages (credible 60-80%, social 70-90%)
-- LIST ACTUAL SOURCES with their weights (e.g., "Reuters: [headline] (Weight: 80%)")
-- Ask a SOCRATIC QUESTION to encourage critical thinking
-- Use phrases like "Based on historical patterns", "When [company] did [X] in [year]", "We believe"
-- USE PROPER LINE BREAKS between sections (use \n\n for paragraph breaks)
-- ALWAYS end with 📚 and mention "Stocrates Points" (NOT "Stockrates")
-
-⚠️ CRITICAL: This text appears BELOW the chart/data, so refer to it as "above" or "here's"
-
-⚠️ FORMATTING: Use proper line breaks:
-- After company description: \n\n
-- Before confidence levels: \n\n
-- Before sources section: \n\n
-- Before Socratic question: \n\n
-- Before disclaimer: \n\n
-    `
+  // Concise system prompt: ~150 tokens vs the previous ~600.
+  // The model already understands the domain from the main system prompt
+  // in the conversation history — this caption call just needs the task.
+  const captionSystemMessage = `You are Stocrates, an educational financial AI using the Socratic Method. \
+You just showed ${toolName} for ${symbol}. Write 3-4 short paragraphs below the widget covering:
+1. What the company/market does (1 plain-English sentence)
+2. A relevant historical event with the year and outcome
+3. Confidence levels: "📊 Credible sources: X% | Social sentiment: X%" (credible 60-80%, social 20-40%)
+4. One Socratic question to encourage critical thinking
+Rules: No "buy/sell/invest/recommend". End with 📚 Stocrates Points disclaimer.${newsContext}`
 
   try {
+    // Truncate history - only send the last MAX_HISTORY_MESSAGES
+    const recentMessages = aiState.get().messages.slice(-MAX_HISTORY_MESSAGES)
+
     const response = await generateText({
       model: groq(MODEL),
+      maxTokens: 450, // captions should be concise
       messages: [
-        {
-          role: 'system',
-          content: captionSystemMessage
-        },
-        ...aiState.get().messages.map((message: any) => ({
+        { role: 'system', content: captionSystemMessage },
+        ...recentMessages.map((message: any) => ({
           role: message.role,
           content: message.content,
           name: message.name
@@ -300,7 +151,7 @@ Bloomberg and WSJ are professional financial news organizations with strict fact
     })
     return response.text || ''
   } catch (err) {
-    return '' // Send tool use without caption.
+    return ''
   }
 }
 
@@ -332,6 +183,11 @@ async function submitUserMessage(content: string, mode?: string) {
     if (!GROQ_API_KEY_ENV) {
       throw new Error('GROQ_API_KEY is not set in environment variables')
     }
+
+    // Truncate conversation history to control token growth.
+    // Sending the full history on every request is the single biggest
+    // source of token creep in a long conversation.
+    const recentMessages = aiState.get().messages.slice(-MAX_HISTORY_MESSAGES)
 
     const result = await streamUI({
       model: groq(TOOL_MODEL),
@@ -449,7 +305,7 @@ If halal mode is NOT active, respond with: "For Shariah compliance questions, sw
 Redirect to education: "I can't tell you what to invest in, but I can teach you how to analyze [company/sector]! Let's explore the data together so you can make informed decisions on your own."
     ` + (mode === 'halal' ? HALAL_SYSTEM_PROMPT : ''),
       messages: [
-        ...aiState.get().messages.map((message: any) => ({
+        ...recentMessages.map((message: any) => ({
           role: message.role,
           content: message.content,
           name: message.name
