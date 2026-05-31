@@ -1,5 +1,7 @@
 # Stocrates
 
+![Stocrates Logo](logo.jpg)
+
 > *Stock + Socrates* — Proven Past, Prepared Future
 
 An educational AI-powered financial literacy platform that teaches beginners how markets react to real-world events through historical pattern analysis and the Socratic Method. Built with Next.js 16, Groq AI (Llama 3.3-70B), and live market data.
@@ -211,4 +213,4 @@ Stocrates is an educational tool only. It does not provide financial advice, inv
 
 ## License
 
-MIT — built by Makhsuma Khamzaliyeva
+MIT — built by Team Code of Duty
