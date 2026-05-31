@@ -1,32 +1,37 @@
-import { DecorativeFrame } from '@/components/ui/stocrates-card'
+'use client'
 
-const features = [
-  {
-    label: 'Educational First',
-    desc: 'Learn market reasoning and concepts, not just raw data points',
-  },
-  {
-    label: 'Historical Context',
-    desc: 'See exactly how similar events unfolded in the past',
-  },
-  {
-    label: 'Pattern Over Prediction',
-    desc: 'Critical thinking through patterns, not fortune-telling',
-  },
-  {
-    label: 'Beginner Friendly',
-    desc: 'Simple explanations with real-world analogies throughout',
-  },
+import { DecorativeFrame } from '@/components/ui/stocrates-card'
+import { useMode } from '@/lib/modes/mode-context'
+import { HALAL_EMPTY_SCREEN_EXAMPLES } from '@/lib/modes/halal'
+
+const standardFeatures = [
+  { label: 'Educational First', desc: 'Learn market reasoning and concepts, not just raw data points' },
+  { label: 'Historical Context', desc: 'See exactly how similar events unfolded in the past' },
+  { label: 'Pattern Over Prediction', desc: 'Critical thinking through patterns, not fortune-telling' },
+  { label: 'Beginner Friendly', desc: 'Simple explanations with real-world analogies throughout' },
 ]
 
-const examples = [
+const halalFeatures = [
+  { label: 'Shariah Screening', desc: 'Every stock analysed against AAOIFI standards for halal compliance' },
+  { label: 'Certified Sources', desc: 'References Islamicly, Zoya, DJIMI, and MSCI Islamic Indexes' },
+  { label: 'Scholarly Context', desc: 'Notes where Islamic finance scholars differ on edge cases' },
+  { label: 'Historical Patterns', desc: 'Educational analysis of halal sectors through market history' },
+]
+
+const standardExamples = [
   'What happens when a tech company announces a major partnership?',
-  'Show me Tesla\'s chart and explain what I\'m looking at',
+  "Show me Tesla's chart and explain what I'm looking at",
   'How do markets typically react to earnings announcements?',
   'Show me the market heatmap and explain what the colors mean',
 ]
 
 export function EmptyScreen() {
+  const { mode } = useMode()
+  const isHalal = mode === 'halal'
+
+  const features = isHalal ? halalFeatures : standardFeatures
+  const examples = isHalal ? HALAL_EMPTY_SCREEN_EXAMPLES : standardExamples
+
   return (
     <div className="mx-auto max-w-3xl px-4 py-8 animate-fade-up">
       <DecorativeFrame cornerColor="blue" className="bg-stocrates-cream p-8 shadow-lg">
@@ -35,25 +40,35 @@ export function EmptyScreen() {
           {/* Header */}
           <div>
             <p className="font-mono text-xs font-bold text-stocrates-dark-blue uppercase tracking-widest mb-3">
-              Educational Financial Intelligence
+              {isHalal ? 'Halal / Shariah-Compliant Mode' : 'Educational Financial Intelligence'}
             </p>
             <h1 className="font-title text-4xl font-bold text-stocrates-dark mb-2 leading-tight">
               Welcome to Stocrates.
             </h1>
             <p className="font-title text-lg text-stocrates-dark-blue">
-              Proven Past, Prepared Future
+              {isHalal ? 'Learn markets the halal way.' : 'Proven Past, Prepared Future'}
             </p>
           </div>
 
           {/* Description */}
           <p className="font-body text-base text-stocrates-dark leading-relaxed max-w-[60ch]">
-            Your educational guide to understanding how markets react to real-world events,
-            using the Socratic method. Instead of making predictions, you get{' '}
-            <strong className="font-semibold">transparent historical pattern analysis</strong>{' '}
-            that teaches you to think critically about markets.
+            {isHalal
+              ? <>
+                  Your educational guide to <strong className="font-semibold">Shariah-compliant investing</strong>.
+                  Every stock analysis includes halal screening based on AAOIFI standards, referencing
+                  certified sources like Islamicly, Zoya, and the Dow Jones Islamic Market Index.
+                  Always verify with a certified Shariah advisor for personal decisions.
+                </>
+              : <>
+                  Your educational guide to understanding how markets react to real-world events,
+                  using the Socratic method. Instead of making predictions, you get{' '}
+                  <strong className="font-semibold">transparent historical pattern analysis</strong>{' '}
+                  that teaches you to think critically about markets.
+                </>
+            }
           </p>
 
-          {/* Features — 2-column grid, numbered */}
+          {/* Features grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {features.map((feature, i) => (
               <div
@@ -74,7 +89,7 @@ export function EmptyScreen() {
           {/* Example questions */}
           <div className="p-5 bg-stocrates-gray/60 border border-stocrates-dark/12 rounded-lg">
             <p className="font-title text-xs font-bold mb-3 text-stocrates-dark uppercase tracking-wide">
-              Start with a question:
+              {isHalal ? 'Try these halal investing questions:' : 'Start with a question:'}
             </p>
             <ul className="font-body text-sm space-y-2.5 text-stocrates-dark/80">
               {examples.map((q, i) => (
@@ -86,7 +101,20 @@ export function EmptyScreen() {
             </ul>
           </div>
 
-          {/* Disclaimer — full border, no side-stripe */}
+          {/* Halal sources note */}
+          {isHalal && (
+            <div className="px-4 py-3 bg-emerald-50 border border-emerald-200 rounded-md">
+              <p className="font-body text-xs text-emerald-900 leading-relaxed">
+                <strong className="font-semibold">Certified sources used for halal screening:</strong>{' '}
+                Islamicly (islamicly.com), Zoya (zoya.finance), Dow Jones Islamic Market Index (S&P Global),
+                MSCI Islamic Indexes, IdealRatings, FTSE Russell Islamic Index Series.
+                Screening follows AAOIFI standards. Always consult a certified Shariah advisor for
+                personal financial decisions.
+              </p>
+            </div>
+          )}
+
+          {/* Standard disclaimer */}
           <div className="px-4 py-3 bg-stocrates-gray border border-stocrates-dark/20 rounded-md">
             <p className="font-body text-xs text-stocrates-dark/65 leading-relaxed">
               <strong className="text-stocrates-dark font-semibold">Educational disclaimer:</strong>{' '}

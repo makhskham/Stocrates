@@ -9,6 +9,8 @@ import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
 import { StreamableValue } from 'ai/rsc'
 import { useStreamableText } from '@/lib/hooks/use-streamable-text'
+import { useCopyToClipboard } from '@/lib/hooks/use-copy-to-clipboard'
+import { Copy, Check } from 'lucide-react'
 
 function UserAvatar() {
   return (
@@ -23,6 +25,23 @@ function BotAvatar() {
     <div className="flex size-[26px] shrink-0 select-none items-center justify-center rounded-md border-2 border-stocrates-dark bg-stocrates-red shadow-sm transition-transform duration-150 group-hover:scale-105">
       <IconGroq className="text-white size-3.5" />
     </div>
+  )
+}
+
+function CopyButton({ text }: { text: string }) {
+  const { isCopied, copyToClipboard } = useCopyToClipboard({ timeout: 2000 })
+  return (
+    <button
+      onClick={() => copyToClipboard(text)}
+      className={cn(
+        'opacity-0 group-hover:opacity-100 transition-opacity duration-150',
+        'p-1.5 rounded-md text-stocrates-dark/40 hover:text-stocrates-dark hover:bg-stocrates-dark/6',
+        'absolute top-0 right-0'
+      )}
+      title="Copy message"
+    >
+      {isCopied ? <Check className="size-3.5 text-emerald-600" /> : <Copy className="size-3.5" />}
+    </button>
   )
 }
 
@@ -49,7 +68,8 @@ export function BotMessage({
   return (
     <div className={cn('group relative flex items-start md:-ml-12 animate-fade-in', className)}>
       <BotAvatar />
-      <div className="ml-4 flex-1 space-y-2 overflow-hidden px-1 pt-0.5">
+      <div className="ml-4 flex-1 space-y-2 overflow-hidden px-1 pt-0.5 relative pr-8">
+        <CopyButton text={text} />
         <MemoizedReactMarkdown
           className="prose break-words prose-p:leading-relaxed prose-pre:p-0 font-body text-stocrates-dark prose-headings:font-title prose-headings:text-stocrates-dark prose-strong:text-stocrates-dark max-w-none"
           remarkPlugins={[remarkGfm, remarkMath]}

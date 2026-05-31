@@ -8,6 +8,7 @@ import {
   createStreamableValue
 } from 'ai/rsc'
 import { createGroq } from '@ai-sdk/groq'
+import { HALAL_SYSTEM_PROMPT } from '@/lib/modes/halal'
 
 import { BotCard, BotMessage } from '@/components/stocks/message'
 import { Caption } from '@/components/stocks/caption'
@@ -303,7 +304,7 @@ Bloomberg and WSJ are professional financial news organizations with strict fact
   }
 }
 
-async function submitUserMessage(content: string) {
+async function submitUserMessage(content: string, mode?: string) {
   'use server'
 
   const aiState = getMutableAIState<typeof AI>()
@@ -446,7 +447,7 @@ Respond with text like: "I don't have specific information about whether [compan
 
 ### When Users Ask About Investing:
 Redirect to education: "I can't tell you what to invest in, but I can teach you how to analyze [company/sector]! Let's explore the data together so you can make informed decisions on your own."
-    `,
+    ` + (mode === 'halal' ? HALAL_SYSTEM_PROMPT : ''),
       messages: [
         ...aiState.get().messages.map((message: any) => ({
           role: message.role,

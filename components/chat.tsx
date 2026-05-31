@@ -5,7 +5,7 @@ import { ChatList } from '@/components/chat-list'
 import { ChatPanel } from '@/components/chat-panel'
 import { EmptyScreen } from '@/components/empty-screen'
 import { useLocalStorage } from '@/lib/hooks/use-local-storage'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useUIState, useAIState } from 'ai/rsc'
 import { Message, Session } from '@/lib/types'
 import { usePathname, useRouter } from 'next/navigation'
@@ -26,6 +26,9 @@ export function Chat({ id, className, session, missingKeys }: ChatProps) {
   const [input, setInput] = useState('')
   const [messages] = useUIState()
   const [aiState] = useAIState()
+  const [isLoading, setIsLoading] = useState(false)
+  const [lastTool, setLastTool] = useState<string | undefined>(undefined)
+  const stopRef = useRef(false)
 
   const [_, setNewChatId] = useLocalStorage('newChatId', id)
 
@@ -42,7 +45,6 @@ export function Chat({ id, className, session, missingKeys }: ChatProps) {
     if (messagesLength === 2) {
       router.refresh()
     }
-    console.log('Value: ', aiState.messages)
   }, [aiState.messages, router])
 
   useEffect(() => {
@@ -54,6 +56,18 @@ export function Chat({ id, className, session, missingKeys }: ChatProps) {
       toast.error(`Missing ${key} environment variable!`)
     })
   }, [missingKeys])
+
+  // Detect loading state from message count changes
+  useEffect(() => {
+    if (messages.length > 0) {
+      setIsLoading(false)
+    }
+  }, [messages.length])
+
+  const handleStop = () => {
+    stopRef.current = true
+    setIsLoading(false)
+  }
 
   const { messagesRef, scrollRef, visibilityRef, isAtBottom, scrollToBottom } =
     useScrollAnchor()
@@ -69,7 +83,7 @@ export function Chat({ id, className, session, missingKeys }: ChatProps) {
 
       <div
         className={cn(
-          messages.length ? 'pb-[200px] pt-4 md:pt-6' : 'pb-[200px] pt-0',
+          messages.length ? 'pb-[220px] pt-4 md:pt-6' : 'pb-[220px] pt-0',
           className
         )}
         ref={messagesRef}
@@ -81,12 +95,16 @@ export function Chat({ id, className, session, missingKeys }: ChatProps) {
         )}
         <div className="w-full h-px" ref={visibilityRef} />
       </div>
+
       <ChatPanel
         id={id}
         input={input}
         setInput={setInput}
         isAtBottom={isAtBottom}
         scrollToBottom={scrollToBottom}
+        isLoading={isLoading}
+        onStop={handleStop}
+        lastTool={lastTool}
       />
     </div>
   )

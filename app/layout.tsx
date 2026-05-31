@@ -11,17 +11,29 @@ import { Analytics } from "@vercel/analytics/react"
 import { GameProvider } from '@/lib/game/game-context'
 import { GameSidebar } from '@/components/game/game-sidebar'
 import { LogoBadge } from '@/components/logo-badge'
+import { ModeProvider } from '@/lib/modes/mode-context'
 
 export const metadata = {
   metadataBase: process.env.VERCEL_URL
     ? new URL(`https://${process.env.VERCEL_URL}`)
-    : undefined,
+    : new URL('http://localhost:3000'),
   title: {
     default: 'Stocrates - Learn Markets Through the Socratic Method',
     template: `%s - Stocrates`,
   },
   description:
     'Educational AI-powered financial literacy platform combining stock market analysis with the Socratic Method. Learn through historical patterns, not predictions.',
+  openGraph: {
+    title: 'Stocrates - Learn Markets Through the Socratic Method',
+    description: 'Educational AI-powered financial literacy using the Socratic Method. Includes Halal/Shariah-compliant investing mode.',
+    siteName: 'Stocrates',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Stocrates',
+    description: 'Educational AI financial literacy using the Socratic Method.',
+  },
   icons: {
     icon: '/logo.jpg',
     shortcut: '/logo.jpg',
@@ -58,16 +70,17 @@ export default function RootLayout({ children }: RootLayoutProps) {
           enableSystem
           disableTransitionOnChange
         >
-          <GameProvider>
-            <div className="flex flex-col min-h-screen bg-stocrates-cream">
-              <Header />
-              <main className="flex flex-col flex-1 bg-stocrates-cream">{children}</main>
-            </div>
-            <GameSidebar />
-            <LogoBadge />
-            {/* <ThemeToggle /> */}
-            <Analytics />
-          </GameProvider>
+          <ModeProvider>
+            <GameProvider>
+              <div className="flex flex-col min-h-screen bg-stocrates-cream">
+                <Header />
+                <main className="flex flex-col flex-1 bg-stocrates-cream">{children}</main>
+              </div>
+              <GameSidebar />
+              <LogoBadge />
+              <Analytics />
+            </GameProvider>
+          </ModeProvider>
         </Providers>
       </body>
     </html>

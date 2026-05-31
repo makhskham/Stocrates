@@ -8,6 +8,8 @@ import { cn } from '@/lib/utils'
 import { buttonVariants } from '@/components/ui/button'
 import { IconSeparator } from '@/components/ui/icons'
 import { useGame } from '@/lib/game/game-context'
+import { useMode } from '@/lib/modes/mode-context'
+import { ModeSelector } from '@/components/ui/mode-selector'
 import { Gamepad2 } from 'lucide-react'
 
 function Navigation() {
@@ -53,14 +55,18 @@ function Navigation() {
 
 export function Header() {
   const { toggleGame, isGameOpen } = useGame()
+  const { mode, setMode } = useMode()
 
   return (
     <header className="sticky top-0 z-50 w-full bg-stocrates-blue/95 backdrop-blur-sm border-b border-stocrates-dark/15 shadow-sm">
-      <div className="container mx-auto px-4 flex h-16 items-center justify-between">
+      <div className="container mx-auto px-4 flex h-16 items-center justify-between gap-4">
         <Navigation />
 
-        <div className="flex items-center gap-5">
-          <span className="font-body text-sm text-stocrates-dark/60 hidden md:block italic select-none">
+        <div className="flex items-center gap-3">
+          {/* Mode selector */}
+          <ModeSelector mode={mode} onChange={setMode} />
+
+          <span className="font-body text-sm text-stocrates-dark/50 hidden lg:block italic select-none">
             Proven Past, Prepared Future
           </span>
 
@@ -81,6 +87,16 @@ export function Header() {
           </button>
         </div>
       </div>
+
+      {/* Halal mode banner */}
+      {mode === 'halal' && (
+        <div className="w-full bg-emerald-50 border-t border-emerald-200 px-4 py-1.5 flex items-center justify-center gap-2">
+          <span className="text-sm">📿</span>
+          <p className="font-body text-xs text-emerald-800">
+            <strong>Halal mode active</strong> — all stock analyses include Shariah screening referencing AAOIFI standards, Islamicly, and Zoya.
+          </p>
+        </div>
+      )}
     </header>
   )
 }
