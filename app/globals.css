@@ -3,10 +3,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
- 
+
 @layer base {
   :root {
-    /* Stocrates Color System */
     --bg-cream: #fffcf0;
     --text-dark: #22271e;
     --accent-blue: #a7dcfa;
@@ -14,236 +13,130 @@
     --light-gray: #efefef;
     --accent-red: #fe502d;
 
-    /* Tailwind CSS Variables (mapped to Stocrates colors) */
-    --background: 48 100% 97%; /* cream */
-    --foreground: 100 13% 13%; /* dark text */
+    --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
 
+    --background: 48 100% 97%;
+    --foreground: 100 13% 13%;
     --card: 48 100% 97%;
     --card-foreground: 100 13% 13%;
-
     --popover: 48 100% 97%;
     --popover-foreground: 100 13% 13%;
-
-    --primary: 100 13% 13%; /* dark text */
-    --primary-foreground: 48 100% 97%; /* cream */
-
-    --secondary: 197 87% 81%; /* accent blue */
+    --primary: 100 13% 13%;
+    --primary-foreground: 48 100% 97%;
+    --secondary: 197 87% 81%;
     --secondary-foreground: 100 13% 13%;
-
-    --muted: 0 0% 94%; /* light gray */
-    --muted-foreground: 197 26% 34%; /* dark blue */
-
-    --accent: 197 87% 81%; /* accent blue */
+    --muted: 0 0% 94%;
+    --muted-foreground: 197 26% 34%;
+    --accent: 197 87% 81%;
     --accent-foreground: 100 13% 13%;
-
-    --destructive: 11 99% 59%; /* accent red */
+    --destructive: 11 99% 59%;
     --destructive-foreground: 48 100% 97%;
-
     --border: 100 13% 13%;
     --input: 0 0% 94%;
     --ring: 197 26% 34%;
-
     --radius: 0.5rem;
-
-    /* Fonts */
     --font-title: 'Space Mono', monospace;
     --font-body: 'Roboto', sans-serif;
   }
 }
- 
+
 @layer base {
-  * {
-    @apply border-border;
-  }
+  * { @apply border-border; }
+  html { scroll-behavior: smooth; }
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-body);
+    background-image:
+      radial-gradient(ellipse at 20% 0%, rgba(167, 220, 250, 0.08) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 100%, rgba(167, 220, 250, 0.06) 0%, transparent 60%);
   }
-  h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-title);
-    font-weight: 700;
+  h1, h2, h3, h4, h5, h6 { font-family: var(--font-title); font-weight: 700; }
+  *:focus-visible {
+    outline: 2px solid var(--accent-blue);
+    outline-offset: 2px;
+    border-radius: 4px;
   }
 }
 
-/* Stocrates Custom Styles */
-.title {
-  font-family: var(--font-title);
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes gradient-shift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
-.body-text {
-  font-family: var(--font-body);
-}
+.animate-fade-up  { animation: fade-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+.animate-fade-in  { animation: fade-in 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+.animate-gradient { background-size: 200% 200%; animation: gradient-shift 3s ease infinite; }
+
+.stagger-children > *:nth-child(1) { animation-delay: 0ms; }
+.stagger-children > *:nth-child(2) { animation-delay: 60ms; }
+.stagger-children > *:nth-child(3) { animation-delay: 120ms; }
+.stagger-children > *:nth-child(4) { animation-delay: 180ms; }
+.stagger-children > *:nth-child(5) { animation-delay: 240ms; }
+
+.title { font-family: var(--font-title); }
+.body-text { font-family: var(--font-body); }
+.game-text { font-family: 'Courier New', monospace; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; }
 
 .game-button {
-  background: var(--text-dark);
-  color: var(--bg-cream);
-  padding: 0.75rem 1.5rem;
-  border-radius: 9999px;
-  font-family: var(--font-title);
-  font-size: 1rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  transition: all 0.2s ease;
-  border: none;
-  cursor: pointer;
+  background: var(--text-dark); color: var(--bg-cream); padding: 0.75rem 1.5rem;
+  border-radius: 9999px; font-family: var(--font-title); font-size: 1rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  transition: background 0.2s cubic-bezier(0.22, 1, 0.36, 1), transform 0.15s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  border: none; cursor: pointer;
 }
+.game-button:hover { background: var(--dark-blue); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(34,39,30,0.18); }
+.game-button:active { transform: translateY(0); box-shadow: none; }
 
-.game-button:hover {
-  background: var(--dark-blue);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+.decorative-border { border: 3px solid var(--text-dark); position: relative; }
+.decorative-border::before, .decorative-border::after {
+  content: ''; position: absolute; width: 12px; height: 12px;
+  border: 3px solid var(--text-dark); background: var(--bg-cream); border-radius: 50%;
 }
+.decorative-border::before { top: -6px; left: -6px; }
+.decorative-border::after  { bottom: -6px; right: -6px; }
 
-.game-button:active {
-  transform: translateY(0);
+.decorative-frame { border: 3px solid var(--text-dark); position: relative; }
+.decorative-frame::before, .decorative-frame::after,
+.decorative-frame .corner-bl, .decorative-frame .corner-br {
+  content: ''; position: absolute; width: 12px; height: 12px;
+  border: 3px solid var(--text-dark); background: var(--bg-cream); border-radius: 50%;
 }
+.decorative-frame::before { top: -6px; left: -6px; }
+.decorative-frame::after  { top: -6px; right: -6px; }
+.decorative-frame .corner-bl { bottom: -6px; left: -6px; }
+.decorative-frame .corner-br { bottom: -6px; right: -6px; }
 
-.decorative-border {
-  border: 3px solid var(--text-dark);
-  position: relative;
-}
-
-.decorative-border::before,
-.decorative-border::after {
-  content: '';
-  position: absolute;
-  width: 12px;
-  height: 12px;
-  border: 3px solid var(--text-dark);
-  background: var(--bg-cream);
-  border-radius: 50%;
-}
-
-.decorative-border::before {
-  top: -6px;
-  left: -6px;
-}
-
-.decorative-border::after {
-  bottom: -6px;
-  right: -6px;
-}
-
-/* Decorative Frame with all 4 corners */
-.decorative-frame {
-  border: 3px solid var(--text-dark);
-  position: relative;
-}
-
-.decorative-frame::before,
-.decorative-frame::after,
-.decorative-frame .corner-bl,
-.decorative-frame .corner-br {
-  content: '';
-  position: absolute;
-  width: 12px;
-  height: 12px;
-  border: 3px solid var(--text-dark);
-  background: var(--bg-cream);
-  border-radius: 50%;
-}
-
-.decorative-frame::before {
-  top: -6px;
-  left: -6px;
-}
-
-.decorative-frame::after {
-  top: -6px;
-  right: -6px;
-}
-
-.decorative-frame .corner-bl {
-  bottom: -6px;
-  left: -6px;
-}
-
-.decorative-frame .corner-br {
-  bottom: -6px;
-  right: -6px;
-}
-
-/* Game-y text styling (like UPLOAD/SAVE buttons) */
-.game-text {
-  font-family: 'Courier New', monospace;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-}
-
-/* Score board table styling */
-.score-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.score-table td,
-.score-table th {
-  padding: 1rem;
-  border-bottom: 2px solid var(--text-dark);
-  font-family: var(--font-body);
-}
-
-.score-table th {
-  font-family: var(--font-title);
-  font-weight: 700;
-  text-align: left;
-}
-
-/* Notification/Info box styling */
+/* No side-stripe border - full border with background tint */
 .info-box {
   background: var(--light-gray);
-  border-left: 4px solid var(--accent-red);
-  padding: 1rem 1.5rem;
+  border: 1.5px solid rgba(34, 39, 30, 0.18);
+  border-radius: 8px;
+  padding: 0.875rem 1.25rem;
   margin: 1rem 0;
   font-family: var(--font-body);
   font-size: 0.875rem;
 }
+.info-box .delete-note { color: var(--accent-red); font-style: italic; margin-top: 0.5rem; }
 
-.info-box .delete-note {
-  color: var(--accent-red);
-  font-style: italic;
-  margin-top: 0.5rem;
-}
-
-/* Interactive hover effects */
 .interactive-element {
-  transition: all 0.2s ease;
+  transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.2s cubic-bezier(0.22, 1, 0.36, 1);
   cursor: pointer;
 }
+.interactive-element:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(34,39,30,0.12); }
+.interactive-element:active { transform: translateY(0); box-shadow: none; }
 
-.interactive-element:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
+.game-icon { width: 2rem; height: 2rem; display: inline-block; filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.1)); }
 
-.interactive-element:active {
-  transform: translateY(0);
-}
-
-/* Chess piece icons or game icons */
-.game-icon {
-  width: 2rem;
-  height: 2rem;
-  display: inline-block;
-  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.1));
-}
-
-/* Animated gradient for Investment Game button */
-@keyframes gradient-shift {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-.animate-gradient {
-  background-size: 200% 200%;
-  animation: gradient-shift 3s ease infinite;
-}
+.score-table { width: 100%; border-collapse: collapse; }
+.score-table td, .score-table th { padding: 1rem; border-bottom: 2px solid var(--text-dark); font-family: var(--font-body); }
+.score-table th { font-family: var(--font-title); font-weight: 700; text-align: left; }
